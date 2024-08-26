@@ -31,7 +31,7 @@ class UnoViewModel(
 
 
     fun updateCard(cost: Int, oldCard: Card) = launch {
-        val newAmount: Short = (oldCard.amount - 20).toShort()
+        val newAmount: Short = (oldCard.amount - cost).toShort()
         if (newAmount >= 0) {
             val newCard = oldCard.copy(amount = newAmount)
             useCase.updateCard(cost, oldCard, newCard).collect {

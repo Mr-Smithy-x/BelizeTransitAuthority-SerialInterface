@@ -1,7 +1,6 @@
 package bz.busfare.rw
 
 import bz.busfare.rw.network.CardService
-import bz.busfare.rw.usecase.CardUseCase
 import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
 import retrofit2.Retrofit
@@ -16,7 +15,7 @@ object BZFare {
     private fun createRetrofitClient(): Retrofit {
         if (!::retrofit.isInitialized) {
             val build = OkHttpClient.Builder()
-                .addInterceptor(HttpLoggingInterceptor().setLevel(HttpLoggingInterceptor.Level.BODY))
+                .addInterceptor(HttpLoggingInterceptor(System.err::println).setLevel(HttpLoggingInterceptor.Level.BODY))
                 .build()
             retrofit = Retrofit.Builder()
                 .client(build)

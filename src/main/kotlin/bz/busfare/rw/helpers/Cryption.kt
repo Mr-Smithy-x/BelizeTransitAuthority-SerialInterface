@@ -1,7 +1,8 @@
-@file:OptIn(ExperimentalEncodingApi::class, ExperimentalStdlibApi::class)
+@file:OptIn(ExperimentalStdlibApi::class)
 
 package bz.busfare.rw.helpers
 
+import bz.busfare.rw.Config
 import javax.crypto.Cipher
 import javax.crypto.spec.IvParameterSpec
 import javax.crypto.spec.SecretKeySpec
@@ -9,6 +10,8 @@ import kotlin.io.encoding.ExperimentalEncodingApi
 
 object Cryption {
 
+    val key get() = Config.getString("KEY")!!.toByteArray() // 16 bytes key for AES-128
+    val iv get() = Config.getString("IV")!!.toByteArray()  // 16 bytes initialization vector
 
     fun encryptInternal(plaintext: ByteArray, key: ByteArray, iv: ByteArray): ByteArray? {
         val cipher = Cipher.getInstance("AES/CBC/PKCS5Padding")
@@ -30,27 +33,19 @@ object Cryption {
 
 
     fun encrypt(bytes: ByteArray): String? {
-        val key = "Bt43zC4rDTr4nZ1T".toByteArray() // 16 bytes key for AES-128
-        val iv = "ILoveBelize!2024".toByteArray()  // 16 bytes initialization vector
         return encryptInternal(bytes, key, iv)?.toHexString(HexFormat.UpperCase)
     }
 
     fun decrypt(encodedBytes: String?): ByteArray? {
-        val key = "Bt43zC4rDTr4nZ1T".toByteArray() // 16 bytes key for AES-128
-        val iv = "ILoveBelize!2024".toByteArray()  // 16 bytes initialization vector
         val value = encodedBytes?.hexToByteArray()
         return decryptInternal(value?: throw NullPointerException("Hex cannot be null"), key, iv)
     }
 
     fun encryptHex(plaintext: String): String? {
-        val key = "Bt43zC4rDTr4nZ1T".toByteArray() // 16 bytes key for AES-128
-        val iv = "ILoveBelize!2024".toByteArray()  // 16 bytes initialization vector
         return encryptInternal(plaintext.toByteArray(), key, iv)?.toHexString()
     }
 
     fun decryptHex(hex: String?): String? {
-        val key = "Bt43zC4rDTr4nZ1T".toByteArray() // 16 bytes key for AES-128
-        val iv = "ILoveBelize!2024".toByteArray()  // 16 bytes initialization vector
         val value = hex?.hexToByteArray()
         return String(decryptInternal(value?: throw NullPointerException("Hex cannot be null"), key, iv) ?:return null)
     }
