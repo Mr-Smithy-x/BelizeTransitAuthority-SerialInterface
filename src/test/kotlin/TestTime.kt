@@ -38,7 +38,6 @@ class TestTime {
         val encrypted = Cryption.encrypt(bytes)
         var cardInfo = Cryption.decrypt(encrypted)!!
         val decrypted = Card.fromBytes(Long.MAX_VALUE, cardInfo)
-        println(decrypted.dump())
         assert(card.uid == decrypted.uid)
         return
     }
@@ -57,8 +56,7 @@ class TestTime {
             routeCardType = RouteCardType.LOCAL_AND_DISTRICT,
             cardActivatedState = CardActivatedState.ACTIVATED
         )
-        println(cardDTO)
-        println(cardDTO.toCard().dump())
         assert(cardDTO.id == cardDTO.toCard().uid)
+
     }
 }
