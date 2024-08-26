@@ -1,7 +1,7 @@
 package bz.busfare.rw.deprecated
 
 import bz.busfare.rw.BZFare
-import bz.busfare.rw.viewmodels.CardState
+import bz.busfare.rw.viewmodel.state.CardState
 import bz.busfare.rw.helpers.Time
 import bz.busfare.rw.io.Serial
 import bz.busfare.rw.models.Card

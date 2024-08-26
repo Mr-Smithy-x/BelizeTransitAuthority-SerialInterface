@@ -1,4 +1,4 @@
-package bz.busfare.rw.viewmodels
+package bz.busfare.rw.viewmodel
 
 import bz.busfare.rw.BZFare
 import bz.busfare.rw.base.ViewModel
@@ -15,17 +15,10 @@ import bz.busfare.rw.models.enums.ClassicCardType
 import bz.busfare.rw.models.enums.RouteCardType
 import bz.busfare.rw.usecase.CardUseCase
 import bz.busfare.rw.usecase.impl.CardUseCaseImpl
+import bz.busfare.rw.viewmodel.state.CardState
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
-
-sealed class CardState {
-    data class Loading(val card: Card) : CardState()
-    data class Updated(val card: Card) : CardState()
-    data class Initialized(val card: Card) : CardState()
-    data object Default : CardState()
-    data class Error(val card: Card?, val exception: Exception) : CardState()
-}
 
 class UnoViewModel(
     private val port: String,

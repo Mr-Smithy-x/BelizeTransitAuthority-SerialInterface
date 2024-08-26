@@ -1,12 +1,10 @@
 package bz.busfare.rw
 
-import bz.busfare.rw.viewmodels.CardState
-import bz.busfare.rw.viewmodels.UnoViewModel
+import bz.busfare.rw.viewmodel.state.CardState
+import bz.busfare.rw.viewmodel.UnoViewModel
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
-
-const val FARE_COST: Short = 2
 
 class UnoMifareReader(devicePort: String) {
 
