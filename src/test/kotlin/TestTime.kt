@@ -1,11 +1,18 @@
+import bz.busfare.rw.Config
 import bz.busfare.rw.helpers.Cryption
 import bz.busfare.rw.helpers.Time
 import bz.busfare.rw.models.Card
 import bz.busfare.rw.models.network.CardDTO
 import bz.busfare.rw.models.enums.*
+import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 
 class TestTime {
+
+    @BeforeEach
+    fun setUp() {
+        Config.load(".env.properties")
+    }
 
     @Test
     fun testOK() {
@@ -31,7 +38,7 @@ class TestTime {
         val encrypted = Cryption.encrypt(bytes)
         var cardInfo = Cryption.decrypt(encrypted)!!
         val decrypted = Card.fromBytes(Long.MAX_VALUE, cardInfo)
-        println(decrypted)
+        assert(card.uid == decrypted.uid)
         return
     }
 
@@ -49,7 +56,7 @@ class TestTime {
             routeCardType = RouteCardType.LOCAL_AND_DISTRICT,
             cardActivatedState = CardActivatedState.ACTIVATED
         )
-        println(cardDTO)
-        println(cardDTO.toCard())
+        assert(cardDTO.id == cardDTO.toCard().uid)
+
     }
 }
