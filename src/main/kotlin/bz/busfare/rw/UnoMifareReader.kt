@@ -4,14 +4,16 @@ import bz.busfare.rw.viewmodel.state.CardState
 import bz.busfare.rw.viewmodel.UnoViewModel
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.SupervisorJob
 import kotlinx.coroutines.launch
 
 class UnoMifareReader(devicePort: String) {
 
+    val isOpened: Boolean get() = serial.isOpened
     private val vm: UnoViewModel = UnoViewModel(devicePort)
     private val serial get() = vm.serial
 
-    fun listen() = CoroutineScope(Dispatchers.Default).launch {
+    fun listen(callback: (CardState) -> Unit) = CoroutineScope(Dispatchers.Default + SupervisorJob()).launch {
         vm.state.collect { currentState ->
             when (currentState) {
                 CardState.Default -> println("Awaiting Card")
@@ -32,15 +34,15 @@ class UnoMifareReader(devicePort: String) {
                     println(currentState.card.dump())
                 }
             }
+            callback(currentState)
         }
     }
 
-
-    fun read() {
-        listen()
+    fun read(callback: (CardState) -> Unit): Boolean {
+        listen(callback)
         val sb = StringBuilder()
         var stub: String?
-        while (true) {
+        while (serial.isOpened) {
             if (serial.ready()) {
                 while (serial.ready()) {
                     stub = serial.readLine()
@@ -70,15 +72,17 @@ class UnoMifareReader(devicePort: String) {
                 Thread.sleep(2000)
             }
         }
+        return true
     }
 
-    fun open(): Boolean {
+    fun open(opened: (Boolean) -> Unit): Boolean {
         val openPort = serial.openPort()
         if (openPort) {
             println("Port is open :)")
         } else {
             println("Failed to open port :(")
         }
+        opened(openPort)
         return openPort
     }
 

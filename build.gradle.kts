@@ -1,15 +1,23 @@
+import org.jetbrains.compose.desktop.application.dsl.TargetFormat
+
 plugins {
-    kotlin("jvm") version "2.0.0"
+    kotlin("jvm")
+    id("org.jetbrains.compose")
+    id("org.jetbrains.kotlin.plugin.compose")
 }
+
 
 group = "bz.busfare.rw"
 version = "1.0-SNAPSHOT"
 
 repositories {
     mavenCentral()
+    maven("https://maven.pkg.jetbrains.space/public/p/compose/dev")
+    google()
 }
 
 dependencies {
+    implementation(compose.desktop.currentOs)
     testImplementation(kotlin("test"))
     implementation("com.fazecast:jSerialComm:2.11.0")
     implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.8.1")
@@ -20,6 +28,17 @@ dependencies {
     implementation("com.squareup.retrofit2:retrofit-converters:2.8.1")
     implementation("com.squareup.okhttp3:okhttp:5.0.0-alpha.10")
     implementation("com.squareup.okhttp3:logging-interceptor:5.0.0-alpha.10")
+}
+
+compose.desktop {
+    application {
+        mainClass = "MainKt"
+        nativeDistributions {
+            targetFormats(TargetFormat.Dmg, TargetFormat.Msi, TargetFormat.Deb)
+            packageName = "BzFare"
+            packageVersion = "1.0.0"
+        }
+    }
 }
 
 tasks.test {

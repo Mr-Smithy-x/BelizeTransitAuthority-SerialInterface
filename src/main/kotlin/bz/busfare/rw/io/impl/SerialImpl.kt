@@ -6,6 +6,8 @@ import com.fazecast.jSerialComm.SerialPort
 
 class SerialImpl(devicePort: String): Serial {
 
+    override val isOpened: Boolean
+        get() = port.isOpen
     override val port: SerialPort = SerialPort.getCommPort(devicePort)
     private val out get() = port.outputStream
     private val input get() = port.inputStream
@@ -20,6 +22,7 @@ class SerialImpl(devicePort: String): Serial {
     override fun readLine(): String = reader.readLine()
     override fun readSerialResponse(): SerialResponse {
         val response = input.read()
+        println("Serial response: $response")
         return SerialResponse.entries[response]
     }
 
@@ -29,7 +32,11 @@ class SerialImpl(devicePort: String): Serial {
     }
 
     override fun openPort(): Boolean = port.openPort()
-    override fun closePort(): Boolean = port.closePort()
+    override fun closePort(): Boolean {
+        port.flushIOBuffers()
+        val closePort = port.closePort()
+        return closePort
+    }
 
     override fun write(data: ByteArray) {
         out.write(data)

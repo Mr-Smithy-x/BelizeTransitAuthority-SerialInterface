@@ -5,6 +5,7 @@ import bz.busfare.rw.io.enums.SerialResponse
 import com.fazecast.jSerialComm.SerialPort
 
 interface Serial {
+    val isOpened: Boolean
     val port: SerialPort
     fun write(data: ByteArray)
     fun write(data: Int)
