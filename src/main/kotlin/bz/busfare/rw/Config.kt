@@ -1,5 +1,7 @@
 package bz.busfare.rw
 
+import androidx.compose.runtime.toMutableStateList
+import androidx.compose.ui.text.input.TextFieldValue
 import java.io.File
 import java.io.FileInputStream
 import java.util.Properties
@@ -7,9 +9,10 @@ import java.util.Properties
 object Config {
 
     private var props: Properties = Properties()
+    private lateinit var file: File
 
     fun load(fileName: String) {
-        val file = File(fileName)
+        file = File(fileName)
         if (file.exists()) {
             val fileInputStream = FileInputStream(file)
             props.load(fileInputStream)
@@ -24,6 +27,25 @@ object Config {
 
     fun getInt(key: String): Int? {
         return getString(key)?.toInt()
+    }
+
+    fun getAll(): MutableSet<MutableMap.MutableEntry<Any, Any>> {
+        return props.entries
+    }
+
+    fun getSafeDictionary(): MutableList<MutableMap.MutableEntry<Any, Any>> {
+        return props.entries.filter { !it.key.toString().startsWith("_") }.toMutableStateList()
+    }
+
+    fun setValue(key: Any, value: Any) {
+        props[key] = value
+        props.save(file.outputStream(), "Save")
+    }
+
+    fun save(dictionary: MutableList<MutableMap.MutableEntry<Any, Any>>) {
+        for ((key, value) in dictionary) {
+            setValue(key, value)
+        }
     }
 
 }

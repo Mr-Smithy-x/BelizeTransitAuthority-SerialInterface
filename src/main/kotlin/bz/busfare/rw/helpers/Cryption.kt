@@ -6,14 +6,13 @@ import bz.busfare.rw.Config
 import javax.crypto.Cipher
 import javax.crypto.spec.IvParameterSpec
 import javax.crypto.spec.SecretKeySpec
-import kotlin.io.encoding.ExperimentalEncodingApi
 
 object Cryption {
 
-    val key get() = Config.getString("KEY")!!.toByteArray() // 16 bytes key for AES-128
-    val iv get() = Config.getString("IV")!!.toByteArray()  // 16 bytes initialization vector
+    private val key get() = Config.getString("_KEY")!!.toByteArray() // 16 bytes key for AES-128
+    private val iv get() = Config.getString("_IV")!!.toByteArray()  // 16 bytes initialization vector
 
-    fun encryptInternal(plaintext: ByteArray, key: ByteArray, iv: ByteArray): ByteArray? {
+    private fun encryptInternal(plaintext: ByteArray, key: ByteArray, iv: ByteArray): ByteArray? {
         val cipher = Cipher.getInstance("AES/CBC/PKCS5Padding")
         val keySpec = SecretKeySpec(key, "AES")
         val ivSpec = IvParameterSpec(iv)
@@ -22,7 +21,7 @@ object Cryption {
         return encryptedBytes
     }
 
-    fun decryptInternal(hex: ByteArray, key: ByteArray, iv: ByteArray): ByteArray? {
+    private fun decryptInternal(hex: ByteArray, key: ByteArray, iv: ByteArray): ByteArray? {
         val cipher = Cipher.getInstance("AES/CBC/PKCS5Padding")
         val keySpec = SecretKeySpec(key, "AES")
         val ivSpec = IvParameterSpec(iv)

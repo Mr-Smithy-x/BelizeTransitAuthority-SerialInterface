@@ -1,5 +1,6 @@
 package bz.busfare.rw
 
+import bz.busfare.rw.Stats.saveLastScannedCard
 import bz.busfare.rw.network.CardService
 import bz.busfare.rw.viewmodel.state.CardState
 import kotlinx.coroutines.CoroutineScope
@@ -12,7 +13,7 @@ import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 import kotlin.coroutines.CoroutineContext
 
-object BZFare: CoroutineScope {
+object BZFare : CoroutineScope {
 
     private lateinit var cardService: CardService
     private lateinit var retrofit: Retrofit
@@ -20,7 +21,7 @@ object BZFare: CoroutineScope {
     var lastJob: Job? = null
 
     val reader: UnoMifareReader by lazy {
-        UnoMifareReader("COM4")
+        UnoMifareReader(Config.getString("PORT")!!)
     }
 
 
@@ -31,24 +32,16 @@ object BZFare: CoroutineScope {
         }
         reader.open(opened)
         return CoroutineScope(Dispatchers.IO + job).launch {
-
             reader.read { cardState ->
-                when(cardState) {
+                when (cardState) {
                     CardState.Default -> Unit
-                    is CardState.Error -> {
-
-                    }
-                    is CardState.Initialized -> {
-
-                    }
                     is CardState.Loading -> Unit
-                    is CardState.Updated -> {
-
-                    }
+                    is CardState.Error, is CardState.Initialized, is CardState.Updated -> saveLastScannedCard(cardState)
                 }
             }
         }
     }
+
 
 
     private fun createRetrofitClient(): Retrofit {
@@ -59,7 +52,7 @@ object BZFare: CoroutineScope {
             retrofit = Retrofit.Builder()
                 .client(build)
                 .addConverterFactory(GsonConverterFactory.create())
-                .baseUrl("http://localhost:8000")
+                .baseUrl(Config.getString("BASE_URL"))
                 .build()
         }
         return retrofit
