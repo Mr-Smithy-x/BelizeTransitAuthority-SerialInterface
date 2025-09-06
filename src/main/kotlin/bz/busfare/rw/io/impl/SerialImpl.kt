@@ -16,7 +16,6 @@ class SerialImpl(devicePort: String): Serial {
     init {
         port.setComPortParameters(9600, 8, 1, 0) // default connection settings for Arduino
         port.setComPortTimeouts(SerialPort.TIMEOUT_SCANNER, 0, 0) // block until bytes can be written
-
     }
 
     override fun readLine(): String = reader.readLine()

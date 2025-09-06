@@ -1,5 +1,6 @@
 package bz.busfare.rw
 
+import androidx.compose.runtime.collectAsState
 import bz.busfare.rw.viewmodel.state.CardState
 import bz.busfare.rw.viewmodel.UnoViewModel
 import kotlinx.coroutines.CoroutineScope

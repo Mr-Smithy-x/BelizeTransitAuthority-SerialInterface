@@ -14,7 +14,9 @@ import bz.busfare.rw.models.enums.CardActivatedState
 import bz.busfare.rw.models.enums.ClassicCardType
 import bz.busfare.rw.models.enums.RouteCardType
 import bz.busfare.rw.usecase.CardUseCase
+import bz.busfare.rw.usecase.TrackUseCase
 import bz.busfare.rw.usecase.impl.CardUseCaseImpl
+import bz.busfare.rw.usecase.impl.TrackUseCaseImpl
 import bz.busfare.rw.viewmodel.state.CardState
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -23,7 +25,8 @@ import kotlinx.coroutines.launch
 class UnoViewModel(
     private val port: String,
     internal val serial: Serial = SerialImpl(port),
-    private val useCase: CardUseCase = CardUseCaseImpl(serial, BZFare.getCardService())
+    private val useCase: CardUseCase = CardUseCaseImpl(serial, BZFare.getCardService()),
+    private val trackUseCase: TrackUseCase = TrackUseCaseImpl(BZFare.getTrackService())
 ) : ViewModel() {
 
     private val _state: MutableStateFlow<CardState> = MutableStateFlow(CardState.Default)

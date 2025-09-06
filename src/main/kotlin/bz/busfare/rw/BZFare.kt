@@ -2,6 +2,7 @@ package bz.busfare.rw
 
 import bz.busfare.rw.Stats.saveLastScannedCard
 import bz.busfare.rw.network.CardService
+import bz.busfare.rw.network.TrackerService
 import bz.busfare.rw.viewmodel.state.CardState
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -15,6 +16,7 @@ import kotlin.coroutines.CoroutineContext
 
 object BZFare : CoroutineScope {
 
+    private lateinit var trackerService: TrackerService
     private lateinit var cardService: CardService
     private lateinit var retrofit: Retrofit
     private val job = Job()
@@ -63,6 +65,13 @@ object BZFare : CoroutineScope {
             cardService = createRetrofitClient().create(CardService::class.java)
         }
         return cardService
+    }
+
+    fun getTrackService(): TrackerService {
+        if (!this::cardService.isInitialized) {
+            trackerService = createRetrofitClient().create(TrackerService::class.java)
+        }
+        return trackerService
     }
 
     override val coroutineContext: CoroutineContext
