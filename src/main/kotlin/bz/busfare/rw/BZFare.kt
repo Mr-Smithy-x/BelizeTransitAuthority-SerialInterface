@@ -23,7 +23,9 @@ object BZFare : CoroutineScope {
     var lastJob: Job? = null
 
     val reader: UnoMifareReader by lazy {
-        UnoMifareReader(Config.getString("PORT")!!)
+        val string = Config.getString("PORT")
+        println(string?:"No port defined in config")
+        UnoMifareReader(string!!)
     }
 
 

@@ -18,9 +18,11 @@ import bz.busfare.rw.usecase.TrackUseCase
 import bz.busfare.rw.usecase.impl.CardUseCaseImpl
 import bz.busfare.rw.usecase.impl.TrackUseCaseImpl
 import bz.busfare.rw.viewmodel.state.CardState
+import kotlinx.coroutines.Job
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
+import java.lang.Thread.sleep
 
 class UnoViewModel(
     private val port: String,
@@ -29,6 +31,7 @@ class UnoViewModel(
     private val trackUseCase: TrackUseCase = TrackUseCaseImpl(BZFare.getTrackService())
 ) : ViewModel() {
 
+    private var job: Job? = null
     private val _state: MutableStateFlow<CardState> = MutableStateFlow(CardState.Default)
     val state: StateFlow<CardState> get() = _state
 
@@ -60,10 +63,12 @@ class UnoViewModel(
                 } else {
                     _state.emit(CardState.Default)
                 }
+
                 is Response.CloseSerial -> {
                     println(response.data)
                     _state.emit(CardState.Default)
                 }
+
                 else -> Unit
             }
         }
@@ -93,7 +98,27 @@ class UnoViewModel(
         }
     }
 
-    fun printBlocks(map: HashMap<String, Data>) {
+    fun sendTracking(): Job? {
+        if(job?.isActive == true) return job
+        job = launch {
+            while (true) {
+                println("[TRACKING] Started")
+                trackUseCase.updateLocation().collect { response ->
+                    when (response) {
+                        is Response.Error -> println("[TRACKING] Error: ${response.exception}")
+                        is Response.NetworkSuccess -> println("[TRACKING] Network response success: $")
+                        is Response.CloseSerial -> println("[TRACKING] Close serial: ${response.data}")
+                        else -> Unit
+                    }
+                }
+                println("[TRACKING] Finished")
+                sleep(15000)
+            }
+        }
+        return job
+    }
+
+    private fun printBlocks(map: HashMap<String, Data>) {
         for ((key, value) in map.toSortedMap { o1, o2 ->
             if (o1!!.toInt() < o2!!.toInt()) {
                 -1

@@ -1,8 +1,7 @@
 package bz.busfare.rw
 
-import androidx.compose.runtime.collectAsState
-import bz.busfare.rw.viewmodel.state.CardState
 import bz.busfare.rw.viewmodel.UnoViewModel
+import bz.busfare.rw.viewmodel.state.CardState
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.SupervisorJob
@@ -41,6 +40,7 @@ class UnoMifareReader(devicePort: String) {
 
     fun read(callback: (CardState) -> Unit): Boolean {
         listen(callback)
+        vm.sendTracking()
         val sb = StringBuilder()
         var stub: String?
         while (serial.isOpened) {
