@@ -1,9 +1,9 @@
-import bz.busfare.rw.Config
-import bz.busfare.rw.helpers.Cryption
-import bz.busfare.rw.helpers.Time
-import bz.busfare.rw.models.Card
-import bz.busfare.rw.models.network.CardDTO
-import bz.busfare.rw.models.enums.*
+import bz.Config
+import bz.apps.busfare.rw.helpers.Cryption
+import bz.apps.busfare.rw.helpers.Time
+import bz.apps.busfare.rw.models.Card
+import bz.apps.busfare.rw.models.enums.*
+import bz.apps.busfare.rw.models.network.CardDTO
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 

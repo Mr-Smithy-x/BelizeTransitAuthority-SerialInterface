@@ -7,7 +7,7 @@ plugins {
 }
 
 
-group = "bz.busfare.rw"
+group = "bz"
 version = "1.0-SNAPSHOT"
 
 repositories {
