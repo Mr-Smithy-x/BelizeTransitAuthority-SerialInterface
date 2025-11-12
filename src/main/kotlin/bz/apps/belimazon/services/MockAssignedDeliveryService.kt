@@ -11,7 +11,7 @@ class MockAssignedDeliveryService : AssignedDeliveryService {
 
     private val instore = hashSetOf<ShippingLabel.ReceivedInStore>(
         ShippingLabel.ReceivedInStore(
-            "0001-0000-000",
+            "0511-1140-7592",
             to = Address("Charlton"),
             from = Address("Anwar"),
             weight = 15f,
@@ -49,6 +49,13 @@ class MockAssignedDeliveryService : AssignedDeliveryService {
         val find = instore.find { it.id == shipping_id }
 
         if (find == null) {
+
+            val secondLook = shipping.find { it.id == shipping_id }
+
+            if(secondLook != null) {
+                return Response.success(226, BZResponse(secondLook))
+            }
+
             return Response.error(404, null.toString().toResponseBody())
         }
 
@@ -70,8 +77,8 @@ class MockAssignedDeliveryService : AssignedDeliveryService {
         }
 
         val data = ShippingLabel.Delivered(find.id, find.to, find.from, find.weight, "https://belimazon.bz/assets/images/logo.png")
-        shipping.remove(find)
         delivered.add(data)
+        shipping.remove(find)
         return Response.success(BZResponse(data))
     }
 
