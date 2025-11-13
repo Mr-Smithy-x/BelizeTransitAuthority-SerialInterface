@@ -11,6 +11,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.RectangleShape
 import androidx.compose.ui.window.*
 import bz.Config
+import bz.apps.Application
 import bz.apps.busfare.rw.BZFare.openAndRead
 import bz.apps.busfare.rw.BZFare.reader
 import bz.apps.busfare.rw.router.Path
@@ -23,9 +24,9 @@ import bz.apps.busfare.rw.router.screens.statistics.StatisticsScreen
 import bz.ui.const.Theme
 import bz.state
 
-object BTAApplication {
+object BTAApplication: Application {
 
-    fun run(): @Composable ApplicationScope.() -> Unit = {
+    override fun run(): @Composable ApplicationScope.() -> Unit = {
         Config.load(".env.properties")
         state = rememberWindowState(
             placement = WindowPlacement.Fullscreen,

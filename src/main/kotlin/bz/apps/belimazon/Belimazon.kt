@@ -22,12 +22,12 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.*
 import bz.Config
+import bz.apps.Application
 import bz.apps.belimazon.services.AssignedDeliveryService
 import bz.apps.belimazon.services.MockAssignedDeliveryService
 import bz.apps.belimazon.usecase.GetDeliveriesUseCase
 import bz.apps.belimazon.viewmodels.MyRouteViewModel
 import bz.state
-import bz.ui.CameraViewJavaCV
 import bz.ui.CameraViewWithScanner
 import bz.ui.CameraViewWithScanner2
 import bz.ui.SelectionButton
@@ -38,13 +38,13 @@ import okhttp3.logging.HttpLoggingInterceptor
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 
-object Belimazon {
+object Belimazon: Application {
 
     private lateinit var retrofit: Retrofit
     private var assignedDeliveryService = mockAssignedDeliverySevice()
     private val vm = MyRouteViewModel(assignedDeliveryService)
 
-    fun run(): @Composable ApplicationScope.() -> Unit = {
+    override fun run(): @Composable ApplicationScope.() -> Unit = {
         Config.load(".env.properties")
         state = rememberWindowState(
             placement = WindowPlacement.Fullscreen,
