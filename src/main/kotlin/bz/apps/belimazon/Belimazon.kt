@@ -22,6 +22,7 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.*
 import bz.Config
+import bz.TESTING
 import bz.apps.Application
 import bz.apps.belimazon.services.AssignedDeliveryService
 import bz.apps.belimazon.services.MockAssignedDeliveryService
@@ -37,15 +38,27 @@ import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
+import kotlin.properties.Delegates
 
 object Belimazon: Application {
 
+    private val testing get() = TESTING
+
     private lateinit var retrofit: Retrofit
-    private var assignedDeliveryService = mockAssignedDeliverySevice()
+
+    private val assignedDeliveryService by lazy {
+        if(testing) {
+            println("Testing mode enabled")
+            mockAssignedDeliverySevice()
+        } else {
+            println("Testing mode disabled")
+            createAssignedDeliveryService()
+        }
+    }
     private val vm = MyRouteViewModel(assignedDeliveryService)
 
     override fun run(): @Composable ApplicationScope.() -> Unit = {
-        Config.load(".env.properties")
+
         state = rememberWindowState(
             placement = WindowPlacement.Fullscreen,
             isMinimized = false,
@@ -294,7 +307,7 @@ object Belimazon: Application {
         retrofit = Retrofit.Builder()
             .client(build)
             .addConverterFactory(GsonConverterFactory.create())
-            .baseUrl(Config.getString("BASE_URL"))
+            .baseUrl(Config.getString("BASE_URL")?:throw Exception("Base URL not defined"))
             .build()
         return retrofit
     }

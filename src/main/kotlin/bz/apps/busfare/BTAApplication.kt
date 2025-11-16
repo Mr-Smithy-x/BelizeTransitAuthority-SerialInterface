@@ -10,7 +10,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.RectangleShape
 import androidx.compose.ui.window.*
-import bz.Config
+import bz.TESTING
 import bz.apps.Application
 import bz.apps.busfare.rw.BZFare.openAndRead
 import bz.apps.busfare.rw.BZFare.reader
@@ -21,13 +21,14 @@ import bz.apps.busfare.rw.router.screens.diagnostics.DiagnosticScreen
 import bz.apps.busfare.rw.router.screens.home.HomeScreen
 import bz.apps.busfare.rw.router.screens.settings.SettingScreen
 import bz.apps.busfare.rw.router.screens.statistics.StatisticsScreen
-import bz.ui.const.Theme
 import bz.state
+import bz.ui.const.Theme
 
 object BTAApplication: Application {
 
+    val testing get() = TESTING
+
     override fun run(): @Composable ApplicationScope.() -> Unit = {
-        Config.load(".env.properties")
         state = rememberWindowState(
             placement = WindowPlacement.Fullscreen,
             isMinimized = false,

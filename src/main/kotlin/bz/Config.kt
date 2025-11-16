@@ -47,4 +47,8 @@ object Config {
         }
     }
 
+    fun getBoolean(key: String): Boolean {
+        return getString(key).toBoolean()
+    }
+
 }
