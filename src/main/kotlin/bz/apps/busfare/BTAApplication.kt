@@ -11,7 +11,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.RectangleShape
 import androidx.compose.ui.window.*
 import bz.TESTING
-import bz.apps.Application
+import bz.apps.ComposeApp
 import bz.apps.busfare.rw.BZFare.openAndRead
 import bz.apps.busfare.rw.BZFare.reader
 import bz.apps.busfare.rw.router.Path
@@ -24,7 +24,7 @@ import bz.apps.busfare.rw.router.screens.statistics.StatisticsScreen
 import bz.state
 import bz.ui.const.Theme
 
-object BTAApplication: Application {
+object BTAApplication: ComposeApp {
 
     val testing get() = TESTING
 

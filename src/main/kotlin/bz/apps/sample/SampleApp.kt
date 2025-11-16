@@ -1,4 +1,4 @@
-package bz.apps
+package bz.apps.sample
 
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
@@ -11,10 +11,11 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.window.*
 import bz.Config
+import bz.apps.ComposeApp
 import bz.state
 import bz.ui.const.Theme
 
-object SampleApp: Application {
+object SampleApp: ComposeApp {
 
     override fun run(): @Composable ApplicationScope.() -> Unit = {
         Config.load(".env.properties")

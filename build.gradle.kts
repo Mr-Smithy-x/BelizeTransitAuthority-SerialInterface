@@ -13,6 +13,8 @@ version = "1.0-SNAPSHOT"
 repositories {
     mavenCentral()
     maven("https://maven.pkg.jetbrains.space/public/p/compose/dev")
+    maven ("https://maven.pkg.jetbrains.space/public/p/ktor/eap")
+    maven ("https://maven.pkg.jetbrains.space/kotlin/p/kotlin/dev")
     google()
 }
 
@@ -29,6 +31,13 @@ dependencies {
     implementation("com.squareup.retrofit2:retrofit-converters:2.8.1")
     implementation("com.squareup.okhttp3:okhttp:5.0.0-alpha.10")
     implementation("com.squareup.okhttp3:logging-interceptor:5.0.0-alpha.10")
+
+
+    implementation(libs.ktor.client.core)
+    implementation(libs.ktor.client.okhttp)
+    implementation(libs.ktor.client.cio)
+    implementation(libs.ktor.client.logging)
+    implementation("io.ktor:ktor-client-okhttp-jvm:2.3.9")
 
     // ZXing for QR and Barcode scanning
     implementation("com.google.zxing:core:3.5.3")

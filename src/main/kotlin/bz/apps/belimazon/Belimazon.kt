@@ -23,7 +23,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.*
 import bz.Config
 import bz.TESTING
-import bz.apps.Application
+import bz.apps.ComposeApp
 import bz.apps.belimazon.services.AssignedDeliveryService
 import bz.apps.belimazon.services.MockAssignedDeliveryService
 import bz.apps.belimazon.usecase.GetDeliveriesUseCase
@@ -38,9 +38,8 @@ import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
-import kotlin.properties.Delegates
 
-object Belimazon: Application {
+object Belimazon: ComposeApp {
 
     private val testing get() = TESTING
 

@@ -3,6 +3,6 @@ package bz.apps
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.window.ApplicationScope
 
-interface Application {
+interface ComposeApp {
     fun run(): @Composable ApplicationScope.() -> Unit
 }
