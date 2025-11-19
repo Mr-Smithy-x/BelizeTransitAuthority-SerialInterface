@@ -36,7 +36,7 @@ class TestTime {
         //val encrypted = "126285E53C5AC958640417D2C2D6B47A"
         val bytes = card.to16BytesArrayPair().second
         val encrypted = Cryption.encrypt(bytes)
-        var cardInfo = Cryption.decrypt(encrypted)!!
+        val cardInfo = Cryption.decrypt(encrypted)!!
         val decrypted = Card.fromBytes(Long.MAX_VALUE, cardInfo)
         assert(card.uid == decrypted.uid)
         return

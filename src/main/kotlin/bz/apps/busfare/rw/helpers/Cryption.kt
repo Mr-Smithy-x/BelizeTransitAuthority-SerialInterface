@@ -9,8 +9,8 @@ import javax.crypto.spec.SecretKeySpec
 
 object Cryption {
 
-    private val key get() = Config.getString("_KEY")!!.toByteArray() // 16 bytes key for AES-128
-    private val iv get() = Config.getString("_IV")!!.toByteArray()  // 16 bytes initialization vector
+    private val key get() = Config.getString("KEY")!!.toByteArray() // 16 bytes key for AES-128
+    private val iv get() = Config.getString("IV")!!.toByteArray()  // 16 bytes initialization vector
 
     private fun encryptInternal(plaintext: ByteArray, key: ByteArray, iv: ByteArray): ByteArray? {
         val cipher = Cipher.getInstance("AES/CBC/PKCS5Padding")
