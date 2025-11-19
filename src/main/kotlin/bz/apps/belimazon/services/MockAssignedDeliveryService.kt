@@ -18,9 +18,9 @@ class MockAssignedDeliveryService : AssignedDeliveryService {
             expectedDate = "November 12, 2025"
         ),
         ShippingLabel.ReceivedInStore(
-            "0002-0000-000",
+            "0707-3400-0034",
             to = Address("Anwar"),
-            from = Address("Vashti"),
+            from = Address("Vashti", "198 Western Paradise Village", "8 Mile", "Belize", "Belize", "N/A"),
             weight = 12f,
             expectedDate = "November 12, 2025"
         ),

@@ -6,6 +6,7 @@ import bz.apps.ComposeApp
 import bz.apps.belimazon.Belimazon
 import bz.apps.busfare.BTAApplication
 import bz.apps.rokuapp.RokuApp
+import bz.apps.sample.SampleApp
 import java.io.IOException
 import kotlin.properties.Delegates
 
@@ -22,6 +23,7 @@ fun main() {
         "Roku" -> RokuApp
         "Belizamon" -> Belimazon
         "BTA" -> BTAApplication
+        "Sample" -> SampleApp
         else -> RokuApp
     }
     application(exitProcessOnExit = true, content.run())
