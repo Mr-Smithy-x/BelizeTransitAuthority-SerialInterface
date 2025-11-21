@@ -57,6 +57,7 @@ class GPSUseCaseImpl(private val serial: Serial) : GPSUseCase {
             open val failedCheckSum: String
         ) : GPSSerial()
 
+        data class Message(val message: String) : GPSSerial()
         data class Error(val exception: Exception) : GPSSerial()
 
     }
@@ -68,7 +69,7 @@ class GPSUseCaseImpl(private val serial: Serial) : GPSUseCase {
             val readLine = serial.readLine()
             if (readLine != null) {
                 val res = readLine.substring(0, 3)
-                val substring = readLine.substring(4)
+                val substring = readLine.substring(3)
                 when (res) {
                     "[S]", "[U]" -> {
                         val response = substring.split("|").map {
@@ -110,6 +111,7 @@ class GPSUseCaseImpl(private val serial: Serial) : GPSUseCase {
                         }
                         emit(Response.WritingToSerial(gps, substring))
                     }
+                    "[I]" -> emit(Response.WritingToSerial(GPSSerial.Message(substring), substring))
                     "[E]" -> emit(Response.Error(Exception(substring)))
                     else -> emit(Response.Error(Exception("Invalid response")))
                 }

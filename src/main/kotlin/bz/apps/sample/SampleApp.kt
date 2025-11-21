@@ -13,10 +13,16 @@ import androidx.compose.ui.window.*
 import bz.Config
 import bz.apps.ComposeApp
 import bz.state
+import bz.tracker.GPSReader
 import bz.tracker.UDPTracker
 import bz.ui.const.Theme
 
 object SampleApp : ComposeApp {
+
+    val reader by lazy {
+        val string = Config.getString("PORT")
+        GPSReader(string!!)
+    }
 
     override fun run(): @Composable ApplicationScope.() -> Unit = {
         Config.load(".env.properties")

@@ -1,17 +1,10 @@
 package bz.tracker
 
 
-import bz.apps.busfare.rw.BZFare
-import bz.base.ViewModel
 import bz.apps.busfare.rw.io.Serial
 import bz.apps.busfare.rw.io.impl.SerialImpl
-import bz.apps.busfare.rw.models.Data
 import bz.apps.busfare.rw.models.Response
-import bz.apps.busfare.rw.usecase.CardUseCase
-import bz.apps.busfare.rw.usecase.TrackUseCase
-import bz.apps.busfare.rw.usecase.impl.CardUseCaseImpl
-import bz.apps.busfare.rw.usecase.impl.TrackUseCaseImpl
-import bz.apps.busfare.rw.viewmodel.state.CardState
+import bz.base.ViewModel
 import bz.tracker.usecase.GPSUseCase
 import bz.tracker.usecase.impl.GPSUseCaseImpl
 import kotlinx.coroutines.Job
@@ -21,7 +14,7 @@ import kotlinx.coroutines.launch
 
 class GPSViewModel(
     private val port: String,
-    internal val serial: Serial = SerialImpl(port),
+    internal val serial: Serial = SerialImpl(port, 115200),
     private val useCase: GPSUseCase = GPSUseCaseImpl(serial),
 ) : ViewModel() {
 

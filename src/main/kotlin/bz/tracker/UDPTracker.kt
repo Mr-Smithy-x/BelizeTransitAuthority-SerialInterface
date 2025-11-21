@@ -33,6 +33,7 @@ object UDPTracker : CoroutineScope {
     }
 
     fun start(ip: String, port: Int) = launch {
+        GPSReader
         val inetAddress = InetAddress.getByName(ip)
 
         while (true) {
