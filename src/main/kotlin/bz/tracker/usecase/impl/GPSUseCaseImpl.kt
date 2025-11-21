@@ -68,6 +68,7 @@ class GPSUseCaseImpl(private val serial: Serial) : GPSUseCase {
         while (serial.isOpened) {
             val readLine = serial.readLine()
             if (readLine != null) {
+                println("GPS: $readLine")
                 val res = readLine.substring(0, 3)
                 val substring = readLine.substring(3)
                 when (res) {
