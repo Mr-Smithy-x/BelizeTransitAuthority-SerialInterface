@@ -9,21 +9,8 @@ import kotlinx.coroutines.flow.flow
 
 class GPSUseCaseImpl(private val serial: Serial) : GPSUseCase {
 
-    sealed class GPSSerial(
-        open val latitude: String,
-        open val longitude: String,
-        open val speed: String,
-        open val course: String,
-        open val courseCardinal: String,
-        open val satellites: String,
-        open val hdop: String,
-        open val altitude: String,
-        open val datetime: String,
-        open val age: String,
-        open val charactersProcessed: String,
-        open val sentencesFixed: String,
-        open val failedCheckSum: String
-    ) {
+    sealed class GPSSerial {
+
         data class Updated(
             override val latitude: String,
             override val longitude: String,
@@ -38,7 +25,7 @@ class GPSUseCaseImpl(private val serial: Serial) : GPSUseCase {
             override val charactersProcessed: String,
             override val sentencesFixed: String,
             override val failedCheckSum: String
-        ) : GPSSerial(
+        ) : Success (
             latitude,
             longitude,
             speed,
@@ -54,37 +41,23 @@ class GPSUseCaseImpl(private val serial: Serial) : GPSUseCase {
             failedCheckSum
         )
 
-        data class Success(
-            override val latitude: String,
-            override val longitude: String,
-            override val speed: String,
-            override val course: String,
-            override val courseCardinal: String,
-            override val satellites: String,
-            override val hdop: String,
-            override val altitude: String,
-            override val datetime: String,
-            override val age: String,
-            override val charactersProcessed: String,
-            override val sentencesFixed: String,
-            override val failedCheckSum: String
-        ) : GPSSerial(
-            latitude,
-            longitude,
-            speed,
-            course,
-            courseCardinal,
-            satellites,
-            hdop,
-            altitude,
-            datetime,
-            age,
-            charactersProcessed,
-            sentencesFixed,
-            failedCheckSum
-        )
+        open class Success(
+            open val latitude: String,
+            open val longitude: String,
+            open val speed: String,
+            open val course: String,
+            open val courseCardinal: String,
+            open val satellites: String,
+            open val hdop: String,
+            open val altitude: String,
+            open val datetime: String,
+            open val age: String,
+            open val charactersProcessed: String,
+            open val sentencesFixed: String,
+            open val failedCheckSum: String
+        ) : GPSSerial()
 
-        class Error(val exception: Exception) : GPSSerial("", "", "", "", "", "", "", "", "", "", "", "", "")
+        class Error(val exception: Exception) : GPSSerial()
 
     }
 
