@@ -18,35 +18,32 @@ class GPSViewModel(
     private val useCase: GPSUseCase = GPSUseCaseImpl(serial),
 ) : ViewModel() {
 
-    sealed class GPSState {
-        data object NoPosition : GPSState()
-        data class Success(val data: GPSUseCaseImpl.GPSSerial) : GPSState()
-        data class Error(val message: String) : GPSState()
-    }
 
     private var job: Job? = null
-    private val _state: MutableStateFlow<GPSState> = MutableStateFlow(GPSState.NoPosition)
-    val state: StateFlow<GPSState> get() = _state
+    private val _state: MutableStateFlow<GPSUseCaseImpl.GPSSerialState> = MutableStateFlow(GPSUseCaseImpl.GPSSerialState.NoPosition)
+    val state: StateFlow<GPSUseCaseImpl.GPSSerialState> get() = _state
 
     fun run() = launch {
         useCase.invoke().collect {
             when(it) {
-                is Response.WritingToSerial<GPSUseCaseImpl.GPSSerial> -> {
-                    _state.emit(GPSState.Success(it.data))
+                is Response.WritingToSerial<GPSUseCaseImpl.GPSSerialState> -> {
+                    _state.emit(it.data)
                 }
                 is Response.Error -> {
-                    if(_state.value !is GPSState.Success) {
-                        _state.emit(GPSState.Error(it.exception.message ?: "Unknown error"))
+                    if(_state.value !is GPSUseCaseImpl.GPSSerialState.Success && _state.value !is GPSUseCaseImpl.GPSSerialState.Updated) {
+                        _state.emit(GPSUseCaseImpl.GPSSerialState.Error(it.exception))
                     }
                 }
                 Response.Loading -> {
-                    if(_state.value !is GPSState.Success) {
-                        _state.emit(GPSState.NoPosition)
+                    if(_state.value !is GPSUseCaseImpl.GPSSerialState.Success && _state.value !is GPSUseCaseImpl.GPSSerialState.Updated) {
+                        _state.emit(GPSUseCaseImpl.GPSSerialState.NoPosition)
                     }
                 }
                 else -> Unit
             }
         }
     }
+
+
 
 }

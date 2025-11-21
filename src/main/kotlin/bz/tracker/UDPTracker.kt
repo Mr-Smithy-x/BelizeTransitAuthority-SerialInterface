@@ -1,6 +1,10 @@
 package bz.tracker
 
+import androidx.compose.runtime.MutableState
+import androidx.compose.runtime.State
+import androidx.compose.runtime.mutableStateOf
 import bz.Config
+import bz.tracker.usecase.impl.GPSUseCaseImpl
 import com.google.gson.JsonObject
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -15,6 +19,14 @@ import kotlin.coroutines.CoroutineContext
 object UDPTracker : CoroutineScope {
 
     private val socket = DatagramSocket()
+    private val _state: MutableState<GPSUseCaseImpl.GPSSerialState> = mutableStateOf(GPSUseCaseImpl.GPSSerialState.NoPosition)
+    private val state: State<GPSUseCaseImpl.GPSSerialState> get() = _state
+
+    val reader by lazy {
+        val string = Config.getString("PORT")
+        GPSReader(string!!)
+    }
+
     private val uuid by lazy {
         Config.getString("UUID") ?: error("UUID not found")
     }
@@ -33,11 +45,32 @@ object UDPTracker : CoroutineScope {
     }
 
     fun start(ip: String, port: Int) = launch {
-        GPSReader
-        val inetAddress = InetAddress.getByName(ip)
+        reader.init()
+        reader.listen { location ->
+            _state.value = location
+            when(location) {
+                is GPSUseCaseImpl.GPSSerialState.Error -> {
+                    println("Error: ${location.exception.message?:"What???"}")
+                }
+                GPSUseCaseImpl.GPSSerialState.NoPosition -> {
+                    println("No position")
+                }
+                is GPSUseCaseImpl.GPSSerialState.Success,is GPSUseCaseImpl.GPSSerialState.Updated-> {
+                    println(location)
+                }
+                is GPSUseCaseImpl.GPSSerialState.Message -> {
+                    println(location.message)
+                }
+            }
+        }
 
-        while (true) {
-            val messageBytes = pingLocation(40.7128, -74.0060).toString().toByteArray()
+        val inetAddress = InetAddress.getByName(ip)
+        fun send(latitude: String, longitude: String) {
+            if(latitude == "*" || longitude == "*") {
+                print(".")
+                return
+            }
+            val messageBytes = pingLocation(latitude.toDouble(), longitude.toDouble()).toString().toByteArray()
             try {
                 val datagramPacket = DatagramPacket(messageBytes, messageBytes.size, inetAddress, port)
                 socket.send(datagramPacket)
@@ -47,7 +80,24 @@ object UDPTracker : CoroutineScope {
             } catch (e: Exception) {
                 e.printStackTrace()
             }
-            println("Waiting to send more...")
+        }
+
+        while (true) {
+            when(val serial = state.value) {
+                is GPSUseCaseImpl.GPSSerialState.Error -> {
+                    println(serial.exception.message?:"What???")
+                }
+                is GPSUseCaseImpl.GPSSerialState.Message -> {
+                    println(serial.message)
+                }
+                is GPSUseCaseImpl.GPSSerialState.Success -> {
+                    send(serial.latitude, serial.longitude)
+                }
+                is GPSUseCaseImpl.GPSSerialState.Updated -> {
+                    send(serial.latitude, serial.longitude)
+                }
+                GPSUseCaseImpl.GPSSerialState.NoPosition -> Unit
+            }
             sleep(5000)
         }
     }

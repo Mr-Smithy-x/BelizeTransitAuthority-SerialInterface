@@ -19,11 +19,6 @@ import bz.ui.const.Theme
 
 object SampleApp : ComposeApp {
 
-    val reader by lazy {
-        val string = Config.getString("PORT")
-        GPSReader(string!!)
-    }
-
     override fun run(): @Composable ApplicationScope.() -> Unit = {
         Config.load(".env.properties")
         state = rememberWindowState(

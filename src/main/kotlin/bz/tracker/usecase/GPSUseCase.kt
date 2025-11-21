@@ -6,5 +6,5 @@ import kotlinx.coroutines.flow.Flow
 
 interface GPSUseCase {
 
-    operator fun invoke(): Flow<Response<GPSUseCaseImpl.GPSSerial>>
+    operator fun invoke(): Flow<Response<GPSUseCaseImpl.GPSSerialState>>
 }

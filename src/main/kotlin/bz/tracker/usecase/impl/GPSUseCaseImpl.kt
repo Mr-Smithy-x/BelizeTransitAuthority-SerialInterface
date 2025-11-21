@@ -9,61 +9,48 @@ import kotlinx.coroutines.flow.flow
 
 class GPSUseCaseImpl(private val serial: Serial) : GPSUseCase {
 
-    sealed class GPSSerial {
+    sealed class GPSSerialState {
 
         data class Updated(
-            override val latitude: String,
-            override val longitude: String,
-            override val speed: String,
-            override val course: String,
-            override val courseCardinal: String,
-            override val satellites: String,
-            override val hdop: String,
-            override val altitude: String,
-            override val datetime: String,
-            override val age: String,
-            override val charactersProcessed: String,
-            override val sentencesFixed: String,
-            override val failedCheckSum: String
-        ) : Success (
-            latitude,
-            longitude,
-            speed,
-            course,
-            courseCardinal,
-            satellites,
-            hdop,
-            altitude,
-            datetime,
-            age,
-            charactersProcessed,
-            sentencesFixed,
-            failedCheckSum
-        )
+            val latitude: String,
+            val longitude: String,
+            val speed: String,
+            val course: String,
+            val courseCardinal: String,
+            val satellites: String,
+            val hdop: String,
+            val altitude: String,
+            val datetime: String,
+            val age: String,
+            val charactersProcessed: String,
+            val sentencesFixed: String,
+            val failedCheckSum: String
+        ) : GPSSerialState()
 
-        open class Success(
-            open val latitude: String,
-            open val longitude: String,
-            open val speed: String,
-            open val course: String,
-            open val courseCardinal: String,
-            open val satellites: String,
-            open val hdop: String,
-            open val altitude: String,
-            open val datetime: String,
-            open val age: String,
-            open val charactersProcessed: String,
-            open val sentencesFixed: String,
-            open val failedCheckSum: String
-        ) : GPSSerial()
+        data class Success(
+            val latitude: String,
+            val longitude: String,
+            val speed: String,
+            val course: String,
+            val courseCardinal: String,
+            val satellites: String,
+            val hdop: String,
+            val altitude: String,
+            val datetime: String,
+            val age: String,
+            val charactersProcessed: String,
+            val sentencesFixed: String,
+            val failedCheckSum: String
+        ) : GPSSerialState()
 
-        data class Message(val message: String) : GPSSerial()
-        data class Error(val exception: Exception) : GPSSerial()
+        data class Message(val message: String) : GPSSerialState()
+        data class Error(val exception: Exception) : GPSSerialState()
+        data object NoPosition : GPSSerialState()
 
     }
 
     // output 3
-    override operator fun invoke(): Flow<Response<GPSSerial>> = flow {
+    override operator fun invoke(): Flow<Response<GPSSerialState>> = flow {
         emit(Response.Loading)
         while (serial.isOpened) {
             val readLine = serial.readLine()
@@ -78,7 +65,7 @@ class GPSUseCaseImpl(private val serial: Serial) : GPSUseCase {
                             split[1]
                         }
                         val gps = if (res == "[U]") {
-                            GPSSerial.Updated(
+                            GPSSerialState.Updated(
                                 latitude = response[0],
                                 longitude = response[1],
                                 speed = response[2],
@@ -94,7 +81,7 @@ class GPSUseCaseImpl(private val serial: Serial) : GPSUseCase {
                                 failedCheckSum = response[12]
                             )
                         } else {
-                            GPSSerial.Success(
+                            GPSSerialState.Success(
                                 latitude = response[0],
                                 longitude = response[1],
                                 speed = response[2],
@@ -112,7 +99,7 @@ class GPSUseCaseImpl(private val serial: Serial) : GPSUseCase {
                         }
                         emit(Response.WritingToSerial(gps, substring))
                     }
-                    "[I]" -> emit(Response.WritingToSerial(GPSSerial.Message(substring), substring))
+                    "[I]" -> emit(Response.WritingToSerial(GPSSerialState.Message(substring), substring))
                     "[E]" -> emit(Response.Error(Exception(substring)))
                     else -> emit(Response.Error(Exception("Invalid response")))
                 }

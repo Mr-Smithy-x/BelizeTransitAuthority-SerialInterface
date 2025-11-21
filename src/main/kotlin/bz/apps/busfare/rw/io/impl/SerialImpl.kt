@@ -21,6 +21,7 @@ class SerialImpl(override val devicePort: String, override val baudRate: Int = 9
         port = SerialPort.getCommPort(devicePort)
         port.setComPortParameters(baudRate, 8, 1, 0) // default connection settings for Arduino
         port.setComPortTimeouts(SerialPort.TIMEOUT_SCANNER, 0, 0) // block until bytes can be written
+        port.openPort()
         reader = input.bufferedReader()
     }
 
