@@ -57,7 +57,7 @@ class GPSUseCaseImpl(private val serial: Serial) : GPSUseCase {
             open val failedCheckSum: String
         ) : GPSSerial()
 
-        class Error(val exception: Exception) : GPSSerial()
+        data class Error(val exception: Exception) : GPSSerial()
 
     }
 
