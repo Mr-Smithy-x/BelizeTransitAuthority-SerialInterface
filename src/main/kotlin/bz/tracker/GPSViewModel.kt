@@ -27,7 +27,7 @@ class GPSViewModel(
 
     sealed class GPSState {
         data object NoPosition : GPSState()
-        data class Success(val data: Data) : GPSState()
+        data class Success(val data: GPSUseCaseImpl.GPSSerial) : GPSState()
         data class Error(val message: String) : GPSState()
     }
 
@@ -39,13 +39,17 @@ class GPSViewModel(
         useCase.invoke().collect {
             when(it) {
                 is Response.WritingToSerial<GPSUseCaseImpl.GPSSerial> -> {
-
+                    _state.emit(GPSState.Success(it.data))
                 }
                 is Response.Error -> {
-
+                    if(_state.value !is GPSState.Success) {
+                        _state.emit(GPSState.Error(it.exception.message ?: "Unknown error"))
+                    }
                 }
                 Response.Loading -> {
-
+                    if(_state.value !is GPSState.Success) {
+                        _state.emit(GPSState.NoPosition)
+                    }
                 }
                 else -> Unit
             }
