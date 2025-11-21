@@ -6,7 +6,6 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.launch
-import java.io.IOException
 import java.lang.Thread.sleep
 import java.net.DatagramPacket
 import java.net.DatagramSocket

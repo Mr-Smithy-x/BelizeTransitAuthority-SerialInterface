@@ -7,7 +7,7 @@ import bz.apps.busfare.rw.models.network.CardDTO
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 
-class TestTime {
+class TestGPS {
 
     @BeforeEach
     fun setUp() {

@@ -35,6 +35,7 @@ object BZFare : CoroutineScope {
             reader.close()
             job.cancel()
         }
+        reader.init()
         reader.open(opened)
         return CoroutineScope(Dispatchers.IO + job).launch {
             reader.read { cardState ->

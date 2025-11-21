@@ -1,4 +1,4 @@
-package bz.apps.busfare.rw
+package bz.tracker
 
 import bz.Config
 import bz.apps.busfare.rw.viewmodel.UnoViewModel
@@ -8,7 +8,7 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.SupervisorJob
 import kotlinx.coroutines.launch
 
-class UnoMifareReader(devicePort: String) {
+class GPSReader(devicePort: String) {
 
     val isOpened: Boolean get() = serial.isOpened
     private val vm: UnoViewModel = UnoViewModel(devicePort)
