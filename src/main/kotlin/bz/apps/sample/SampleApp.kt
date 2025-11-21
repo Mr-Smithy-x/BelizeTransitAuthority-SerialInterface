@@ -9,6 +9,8 @@ import androidx.compose.material.darkColors
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.unit.DpSize
+import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.*
 import bz.Config
 import bz.apps.ComposeApp
@@ -22,9 +24,10 @@ object SampleApp : ComposeApp {
     override fun run(): @Composable ApplicationScope.() -> Unit = {
         Config.load(".env.properties")
         state = rememberWindowState(
-            placement = WindowPlacement.Fullscreen,
+            placement = WindowPlacement.Floating,
             isMinimized = false,
-            WindowPosition(Alignment.Center)
+            position = WindowPosition(Alignment.Center),
+            size = DpSize(300.dp, 200.dp)
         )
 
         var job by remember { mutableStateOf<kotlinx.coroutines.Job?>(null) }
@@ -32,7 +35,7 @@ object SampleApp : ComposeApp {
             onCloseRequest = {
                 exitApplication()
             },
-            resizable = false, undecorated = true,
+            resizable = false, undecorated = false,
             title = "Belize Transportation Authority",
             state = state
         ) {
@@ -57,6 +60,7 @@ object SampleApp : ComposeApp {
                         if(job != null) {
                             job?.cancel()
                         }
+                        UDPTracker.reader.close()
                     }) {
                         Text("Stop")
                     }

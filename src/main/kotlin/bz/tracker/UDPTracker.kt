@@ -56,7 +56,7 @@ object UDPTracker : CoroutineScope {
                     println("No position")
                 }
                 is GPSUseCaseImpl.GPSSerialState.Success,is GPSUseCaseImpl.GPSSerialState.Updated-> {
-                    println(location)
+                    //println(location)
                 }
                 is GPSUseCaseImpl.GPSSerialState.Message -> {
                     println(location.message)
@@ -65,36 +65,36 @@ object UDPTracker : CoroutineScope {
         }
 
         val inetAddress = InetAddress.getByName(ip)
-        fun send(latitude: String, longitude: String) {
+        fun send(latitude: String, longitude: String): Boolean {
             if(latitude == "*" || longitude == "*") {
-                print(".")
-                return
+                return false
             }
             val messageBytes = pingLocation(latitude.toDouble(), longitude.toDouble()).toString().toByteArray()
             try {
                 val datagramPacket = DatagramPacket(messageBytes, messageBytes.size, inetAddress, port)
                 socket.send(datagramPacket)
-                println("Packet sent.")
+                return true
             } catch (e: IllegalArgumentException) {
                 e.printStackTrace()
             } catch (e: Exception) {
                 e.printStackTrace()
             }
+            return false
         }
 
         while (true) {
             when(val serial = state.value) {
-                is GPSUseCaseImpl.GPSSerialState.Error -> {
-                    println(serial.exception.message?:"What???")
-                }
-                is GPSUseCaseImpl.GPSSerialState.Message -> {
-                    println(serial.message)
-                }
+                is GPSUseCaseImpl.GPSSerialState.Error -> Unit
+                is GPSUseCaseImpl.GPSSerialState.Message -> Unit
                 is GPSUseCaseImpl.GPSSerialState.Success -> {
-                    send(serial.latitude, serial.longitude)
+                    if(send(serial.latitude, serial.longitude)) {
+                        println("sent:$serial")
+                    }
                 }
                 is GPSUseCaseImpl.GPSSerialState.Updated -> {
-                    send(serial.latitude, serial.longitude)
+                    if(send(serial.latitude, serial.longitude)) {
+                        println("sent:$serial")
+                    }
                 }
                 GPSUseCaseImpl.GPSSerialState.NoPosition -> Unit
             }

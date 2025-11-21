@@ -7,6 +7,7 @@ import bz.apps.belimazon.Belimazon
 import bz.apps.busfare.BTAApplication
 import bz.apps.rokuapp.RokuApp
 import bz.apps.sample.SampleApp
+import com.fazecast.jSerialComm.SerialPort
 import java.io.IOException
 import kotlin.properties.Delegates
 
@@ -18,6 +19,7 @@ var TESTING by Delegates.notNull<Boolean>()
 fun main() {
     Config.load(".env.properties")
     TESTING = Config.getBoolean("TESTING")
+    println("Testing mode: ${SerialPort.getCommPorts().map { it.systemPortName }}")
 
     val content: ComposeApp = when(Config.getString("APP")){
         "Roku" -> RokuApp
