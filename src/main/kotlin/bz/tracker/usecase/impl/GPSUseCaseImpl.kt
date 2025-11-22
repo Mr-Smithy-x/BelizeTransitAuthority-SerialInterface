@@ -61,7 +61,7 @@ class GPSUseCaseImpl(private val serial: Serial) : GPSUseCase {
                 when (res) {
                     "[S]", "[U]" -> {
                         val response = substring.split("|").map {
-                            val split = it.split(":")
+                            val split = it.split(":", limit=2)
                             split[1]
                         }
                         val gps = if (res == "[U]") {
