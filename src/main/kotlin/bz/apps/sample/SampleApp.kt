@@ -48,7 +48,7 @@ object SampleApp : ComposeApp {
                         if(job?.isActive == true) {
                             job?.cancel()
                         }
-                        job = UDPTracker.start("127.0.0.1", 9000)
+                        job = UDPTracker.start(Config.getString("GPS_UDP_HOST")!!, Config.getInt("GPS_UDP_PORT")!!)
                     }
                     Item("Stop GPS Tracker") {
                         if(job != null) {
