@@ -40,10 +40,7 @@ object SampleApp : ComposeApp {
             state = state
         ) {
             MenuBar {
-                Menu("File") {
-                    Item("Exit") {
-                        exitApplication()
-                    }
+                Menu("Connection") {
                     Item("Start GPS Tracker") {
                         if(job?.isActive == true) {
                             job?.cancel()
@@ -55,6 +52,9 @@ object SampleApp : ComposeApp {
                             job?.cancel()
                         }
                         UDPTracker.reader.close()
+                    }
+                    Item("Exit") {
+                        exitApplication()
                     }
                 }
             }
