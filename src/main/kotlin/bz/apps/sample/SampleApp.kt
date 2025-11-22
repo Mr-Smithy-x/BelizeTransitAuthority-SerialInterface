@@ -1,5 +1,6 @@
 package bz.apps.sample
 
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
@@ -27,7 +28,7 @@ object SampleApp : ComposeApp {
             placement = WindowPlacement.Floating,
             isMinimized = false,
             position = WindowPosition(Alignment.Center),
-            size = DpSize(300.dp, 200.dp)
+            size = DpSize(300.dp, 300.dp)
         )
 
         var job by remember { mutableStateOf<kotlinx.coroutines.Job?>(null) }
@@ -68,7 +69,7 @@ object SampleApp : ComposeApp {
                     fun display(serial: GPSUseCaseImpl.GPSSerialState.Updated) {
                         val (latitude, longitude, speed, course, courseCardinal, satellites, hdop, altitude, datetime, age, charactersProcessed, sentencesFixed, failedCheckSum) = serial
 
-                        Column {
+                        Column(verticalArrangement = Arrangement.spacedBy(2.dp)) {
                             Text("Sats: $satellites, HDOP: $hdop")
                             Text("Coords: $latitude, $longitude")
                             Text("Altitude: $altitude")
