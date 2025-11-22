@@ -20,7 +20,7 @@ object UDPTracker : CoroutineScope {
 
     private val socket = DatagramSocket()
     private val _state: MutableState<GPSUseCaseImpl.GPSSerialState> = mutableStateOf(GPSUseCaseImpl.GPSSerialState.NoPosition)
-    private val state: State<GPSUseCaseImpl.GPSSerialState> get() = _state
+    val state: State<GPSUseCaseImpl.GPSSerialState> get() = _state
 
     val reader by lazy {
         val string = Config.getString("PORT")

@@ -2,7 +2,7 @@ package bz.apps.sample
 
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.material.Button
+import androidx.compose.foundation.layout.padding
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Text
 import androidx.compose.material.darkColors
@@ -15,8 +15,8 @@ import androidx.compose.ui.window.*
 import bz.Config
 import bz.apps.ComposeApp
 import bz.state
-import bz.tracker.GPSReader
 import bz.tracker.UDPTracker
+import bz.tracker.usecase.impl.GPSUseCaseImpl
 import bz.ui.const.Theme
 
 object SampleApp : ComposeApp {
@@ -36,7 +36,7 @@ object SampleApp : ComposeApp {
                 exitApplication()
             },
             resizable = false, undecorated = false,
-            title = "Belize Transportation Authority",
+            title = "GPS Test",
             state = state
         ) {
             MenuBar {
@@ -44,25 +44,50 @@ object SampleApp : ComposeApp {
                     Item("Exit") {
                         exitApplication()
                     }
-                }
-            }
-            MaterialTheme(colors = darkColors(background = Theme.Base.background)) {
-                Column(modifier = Modifier.fillMaxSize()) {
-                    Button(onClick = {
+                    Item("Start GPS Tracker") {
                         if(job?.isActive == true) {
                             job?.cancel()
                         }
                         job = UDPTracker.start("127.0.0.1", 9000)
-                    }) {
-                        Text("Read GPS")
                     }
-                    Button(onClick = {
+                    Item("Stop GPS Tracker") {
                         if(job != null) {
                             job?.cancel()
                         }
                         UDPTracker.reader.close()
-                    }) {
-                        Text("Stop")
+                    }
+                }
+            }
+            MaterialTheme(colors = darkColors(background = Theme.Base.background)) {
+                Column(
+                    modifier = Modifier.fillMaxSize().padding(16.dp)
+                ) {
+                    val state by remember { UDPTracker.state }
+
+                    @Composable
+                    fun display(serial: GPSUseCaseImpl.GPSSerialState.Updated) {
+                        val (latitude, longitude, speed, course, courseCardinal, satellites, hdop, altitude, datetime, age, charactersProcessed, sentencesFixed, failedCheckSum) = serial
+
+                        Column {
+                            Text("Sats: $satellites, HDOP: $hdop")
+                            Text("Coords: $latitude, $longitude")
+                            Text("Altitude: $altitude")
+                            Text("Speed: $speed")
+                            Text("Course: $course, $courseCardinal")
+                            Text("Date Time: $datetime")
+                            Text("Age: $age")
+                        }
+                    }
+
+                    when(val serial = state) {
+                        is GPSUseCaseImpl.GPSSerialState.Error -> Text(serial.exception.message?:"")
+                        is GPSUseCaseImpl.GPSSerialState.Message -> Text(serial.message)
+                        GPSUseCaseImpl.GPSSerialState.NoPosition -> Text("No position...")
+                        is GPSUseCaseImpl.GPSSerialState.Success -> {
+                            Text("Fixing Position...")
+                        }
+                        is GPSUseCaseImpl.GPSSerialState.Updated -> display(serial)
+
                     }
                 }
             }
