@@ -31,14 +31,26 @@ object UDPTracker : CoroutineScope {
         Config.getString("UUID") ?: error("UUID not found")
     }
 
-    private fun pingLocation(latitude: Double, longitude: Double): JsonObject {
+    private fun pingLocation(serial: GPSUseCaseImpl.GPSSerialState.Updated): JsonObject {
         val message = JsonObject().apply {
             addProperty("type", "cmd")
             addProperty("command", "update")
+            addProperty("uuid", uuid)
             val element = JsonObject()
-            element.addProperty("uuid", uuid)
-            element.addProperty("latitude", latitude)
-            element.addProperty("longitude", longitude)
+            val (latitude, longitude, speed, course, courseCardinal, satellites, hdop, altitude,  datetime, age, charactersProcessed, sentencesFixed, failedCheckSum) = serial
+            element.addProperty("latitude", latitude.toDouble())
+            element.addProperty("longitude", longitude.toDouble())
+            element.addProperty("speed", speed.toDouble())
+            element.addProperty("course", course.toDouble())
+            element.addProperty("course_cardinal", courseCardinal)
+            element.addProperty("satellites", satellites.toInt())
+            element.addProperty("hdop", hdop.toDouble())
+            element.addProperty("altitude", altitude.toDouble())
+            element.addProperty("datetime", datetime)
+            element.addProperty("age", age.toInt())
+            element.addProperty("characters_processed", charactersProcessed.toInt())
+            element.addProperty("sentences_fixed", sentencesFixed.toInt())
+            element.addProperty("failed_checksum", failedCheckSum.toInt())
             add("data", element)
         }
         return message
@@ -65,11 +77,11 @@ object UDPTracker : CoroutineScope {
         }
 
         val inetAddress = InetAddress.getByName(ip)
-        fun send(latitude: String, longitude: String): Boolean {
-            if(latitude == "*" || longitude == "*") {
+        fun send(serial: GPSUseCaseImpl.GPSSerialState.Updated): Boolean {
+            if(serial.latitude == "*" || serial.longitude == "*") {
                 return false
             }
-            val messageBytes = pingLocation(latitude.toDouble(), longitude.toDouble()).toString().toByteArray()
+            val messageBytes = pingLocation(serial).toString().toByteArray()
             try {
                 val datagramPacket = DatagramPacket(messageBytes, messageBytes.size, inetAddress, port)
                 socket.send(datagramPacket)
@@ -87,12 +99,10 @@ object UDPTracker : CoroutineScope {
                 is GPSUseCaseImpl.GPSSerialState.Error -> Unit
                 is GPSUseCaseImpl.GPSSerialState.Message -> Unit
                 is GPSUseCaseImpl.GPSSerialState.Success -> {
-                    if(send(serial.latitude, serial.longitude)) {
-                        println("sent:$serial")
-                    }
+                    //TODO: Wont update because its old location data
                 }
                 is GPSUseCaseImpl.GPSSerialState.Updated -> {
-                    if(send(serial.latitude, serial.longitude)) {
+                    if(send(serial)) {
                         println("sent:$serial")
                     }
                 }
