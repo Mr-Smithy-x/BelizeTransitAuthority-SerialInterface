@@ -17,7 +17,7 @@ import bz.Config
 import bz.apps.ComposeApp
 import bz.state
 import bz.tracker.UDPTracker
-import bz.tracker.usecase.impl.GPSUseCaseImpl
+import bz.tracker.usecase.state.GPSSerialState
 import bz.ui.const.Theme
 
 object SampleApp : ComposeApp {
@@ -66,7 +66,7 @@ object SampleApp : ComposeApp {
                     val state by remember { UDPTracker.state }
 
                     @Composable
-                    fun display(serial: GPSUseCaseImpl.GPSSerialState.Updated) {
+                    fun display(serial: GPSSerialState.Updated) {
                         val (latitude, longitude, speed, course, courseCardinal, satellites, hdop, altitude, datetime, age, charactersProcessed, sentencesFixed, failedCheckSum) = serial
 
                         Column(verticalArrangement = Arrangement.spacedBy(2.dp)) {
@@ -81,13 +81,13 @@ object SampleApp : ComposeApp {
                     }
 
                     when(val serial = state) {
-                        is GPSUseCaseImpl.GPSSerialState.Error -> Text(serial.exception.message?:"")
-                        is GPSUseCaseImpl.GPSSerialState.Message -> Text(serial.message)
-                        GPSUseCaseImpl.GPSSerialState.NoPosition -> Text("No position...")
-                        is GPSUseCaseImpl.GPSSerialState.Success -> {
+                        is GPSSerialState.Error -> Text(serial.exception.message?:"")
+                        is GPSSerialState.Message -> Text(serial.message)
+                        GPSSerialState.NoPosition -> Text("No position...")
+                        is GPSSerialState.Positioning -> {
                             Text("Fixing Position...")
                         }
-                        is GPSUseCaseImpl.GPSSerialState.Updated -> display(serial)
+                        is GPSSerialState.Updated -> display(serial)
 
                     }
                 }
