@@ -21,13 +21,13 @@ fun main() {
     TESTING = Config.getBoolean("TESTING")
     println("Testing mode: ${SerialPort.getCommPorts().map { it.systemPortName }}")
 
-    val content: ComposeApp = when(Config.getString("APP")){
+    val content: ComposeApp = when (Config.getString("APP")) {
         "Roku" -> RokuApp
         "Belizamon" -> Belimazon
         "BTA" -> BTAApplication
         "Tracker" -> TrackerApp
         else -> RokuApp
     }
-    application(exitProcessOnExit = true, content.run())
+    application(exitProcessOnExit = true, content = content.run())
 }
 
