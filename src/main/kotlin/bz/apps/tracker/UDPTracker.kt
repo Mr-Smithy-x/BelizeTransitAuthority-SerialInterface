@@ -1,10 +1,10 @@
-package bz.tracker
+package bz.apps.tracker
 
 import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.State
 import androidx.compose.runtime.mutableStateOf
 import bz.Config
-import bz.tracker.usecase.state.GPSSerialState
+import bz.apps.tracker.usecase.state.GPSSerialState
 import com.google.gson.JsonObject
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers

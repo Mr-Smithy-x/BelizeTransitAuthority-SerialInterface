@@ -1,4 +1,4 @@
-package bz.tracker.usecase.state
+package bz.apps.tracker.usecase.state
 
 sealed class GPSSerialState(open val raw: String) {
 

@@ -1,4 +1,4 @@
-package bz.apps.sample
+package bz.apps.tracker
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -16,11 +16,10 @@ import androidx.compose.ui.window.*
 import bz.Config
 import bz.apps.ComposeApp
 import bz.state
-import bz.tracker.UDPTracker
-import bz.tracker.usecase.state.GPSSerialState
+import bz.apps.tracker.usecase.state.GPSSerialState
 import bz.ui.const.Theme
 
-object SampleApp : ComposeApp {
+object TrackerApp : ComposeApp {
 
     override fun run(): @Composable ApplicationScope.() -> Unit = {
         Config.load(".env.properties")
@@ -46,7 +45,10 @@ object SampleApp : ComposeApp {
                         if(job?.isActive == true) {
                             job?.cancel()
                         }
-                        job = UDPTracker.start(Config.getString("GPS_UDP_HOST")!!, Config.getInt("GPS_UDP_PORT")!!)
+                        job = UDPTracker.start(
+                            ip = Config.getString("GPS_UDP_HOST")!!,
+                            port = Config.getInt("GPS_UDP_PORT")!!
+                        )
                     }
                     Item("Stop GPS Tracker") {
                         if(job != null) {

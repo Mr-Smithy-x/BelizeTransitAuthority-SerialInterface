@@ -1,7 +1,7 @@
-package bz.tracker
+package bz.apps.tracker
 
-import bz.tracker.usecase.state.GPSSerialState
-import bz.tracker.viewmodel.GPSViewModel
+import bz.apps.tracker.usecase.state.GPSSerialState
+import bz.apps.tracker.viewmodel.GPSViewModel
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.SupervisorJob

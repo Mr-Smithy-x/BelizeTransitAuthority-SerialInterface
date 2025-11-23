@@ -1,9 +1,9 @@
-package bz.tracker.usecase.impl
+package bz.apps.tracker.usecase.impl
 
 import bz.apps.busfare.rw.io.Serial
 import bz.apps.busfare.rw.models.Response
-import bz.tracker.usecase.GPSUseCase
-import bz.tracker.usecase.state.GPSSerialState
+import bz.apps.tracker.usecase.GPSUseCase
+import bz.apps.tracker.usecase.state.GPSSerialState
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.flow

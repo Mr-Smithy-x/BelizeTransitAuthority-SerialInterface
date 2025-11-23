@@ -1,7 +1,7 @@
-package bz.tracker.usecase
+package bz.apps.tracker.usecase
 
 import bz.apps.busfare.rw.models.Response
-import bz.tracker.usecase.state.GPSSerialState
+import bz.apps.tracker.usecase.state.GPSSerialState
 import kotlinx.coroutines.flow.Flow
 
 interface GPSUseCase {
