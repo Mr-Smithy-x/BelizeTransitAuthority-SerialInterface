@@ -46,7 +46,7 @@ object Belimazon: ComposeApp {
     private val assignedDeliveryService by lazy {
         if(testing) {
             println("Testing mode enabled")
-            mockAssignedDeliverySevice()
+            mockAssignedDeliveryService()
         } else {
             println("Testing mode disabled")
             createAssignedDeliveryService()
@@ -306,7 +306,7 @@ object Belimazon: ComposeApp {
         return createRetrofitClient().create(AssignedDeliveryService::class.java)
     }
 
-    private fun mockAssignedDeliverySevice(): AssignedDeliveryService {
+    private fun mockAssignedDeliveryService(): AssignedDeliveryService {
         return MockAssignedDeliveryService()
     }
 
