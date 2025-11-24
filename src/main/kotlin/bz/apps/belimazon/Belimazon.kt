@@ -9,13 +9,8 @@ import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.lazy.grid.items
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.onClick
-import androidx.compose.material.Icon
-import androidx.compose.material.MaterialTheme
-import androidx.compose.material.Text
-import androidx.compose.material.darkColors
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.State
-import androidx.compose.runtime.collectAsState
+import androidx.compose.material.*
+import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
@@ -28,6 +23,9 @@ import bz.apps.belimazon.services.AssignedDeliveryService
 import bz.apps.belimazon.services.MockAssignedDeliveryService
 import bz.apps.belimazon.usecase.GetDeliveriesUseCase
 import bz.apps.belimazon.viewmodels.MyRouteViewModel
+import bz.apps.tracker.TrackerApp
+import bz.apps.tracker.UDPTracker
+import bz.apps.tracker.usecase.state.GPSSerialState
 import bz.state
 import bz.ui.CameraViewWithScanner
 import bz.ui.CameraViewWithScanner2
@@ -91,6 +89,7 @@ object Belimazon: ComposeApp {
                 }
             }
             MaterialTheme(colors = darkColors(background = Theme.Base.background)) {
+                val state by remember { UDPTracker.state }
                 when (path.value) {
                     Routes.Home -> HomeScreen()
                     Routes.MyRoute -> HeaderScreen(onBack = {
@@ -103,6 +102,19 @@ object Belimazon: ComposeApp {
                         Router.push(Routes.Home)
                     }) {
                         Text("Configuration Screen")
+                        when(state) {
+                            is GPSSerialState.Error -> Unit
+                            is GPSSerialState.Message -> Unit
+                            GPSSerialState.NoPosition -> {
+                                Button(onClick = {
+                                    UDPTracker.start(Config.getString("GPS_UDP_HOST")!!, 9000)
+                                },Modifier.padding(16.dp).fillMaxWidth()) {
+                                    Text("Start GPS")
+                                }
+                            }
+                            is GPSSerialState.Positioning -> Unit
+                            is GPSSerialState.Updated -> TrackerApp.mainDisplay()
+                        }
                     }
 
                     Routes.ScanProduct.Home, Routes.ScanProduct.DropOff, Routes.ScanProduct.Pickup -> {

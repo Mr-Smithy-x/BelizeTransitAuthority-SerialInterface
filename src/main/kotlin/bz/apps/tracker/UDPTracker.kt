@@ -88,6 +88,10 @@ object UDPTracker : CoroutineScope {
             try {
                 val datagramPacket = DatagramPacket(messageBytes, messageBytes.size, inetAddress, port)
                 socket.send(datagramPacket)
+                if(Config.getBoolean("TESTING")) {
+                    datagramPacket.address = InetAddress.getByName(Config.getString("GPS_UDP_TEST_HOST")?:"127.0.0.1")
+                    socket.send(datagramPacket)
+                }
                 return true
             } catch (e: IllegalArgumentException) {
                 e.printStackTrace()
@@ -111,7 +115,7 @@ object UDPTracker : CoroutineScope {
                 }
                 GPSSerialState.NoPosition -> Unit
             }
-            sleep(5000)
+            sleep(3000)
         }
     }
 

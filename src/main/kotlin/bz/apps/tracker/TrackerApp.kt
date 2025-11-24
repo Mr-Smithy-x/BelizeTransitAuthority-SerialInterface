@@ -62,39 +62,44 @@ object TrackerApp : ComposeApp {
                 }
             }
             MaterialTheme(colors = darkColors(background = Theme.Base.background)) {
-                Column(
-                    modifier = Modifier.fillMaxSize().padding(16.dp)
-                ) {
-                    val state by remember { UDPTracker.state }
-
-                    @Composable
-                    fun display(serial: GPSSerialState.Updated) {
-                        val (latitude, longitude, speed, course, courseCardinal, satellites, hdop, altitude, datetime, age, charactersProcessed, sentencesFixed, failedCheckSum) = serial
-
-                        Column(verticalArrangement = Arrangement.spacedBy(2.dp)) {
-                            Text("Sats: $satellites, HDOP: $hdop")
-                            Text("Coords: $latitude, $longitude")
-                            Text("Altitude: $altitude")
-                            Text("Speed: $speed")
-                            Text("Course: $course, $courseCardinal")
-                            Text("Date Time: $datetime")
-                            Text("Age: $age")
-                        }
-                    }
-
-                    when(val serial = state) {
-                        is GPSSerialState.Error -> Text(serial.exception.message?:"")
-                        is GPSSerialState.Message -> Text(serial.message)
-                        GPSSerialState.NoPosition -> Text("No position...")
-                        is GPSSerialState.Positioning -> {
-                            Text("Fixing Position...")
-                        }
-                        is GPSSerialState.Updated -> display(serial)
-
-                    }
-                }
+                mainDisplay()
             }
         }
     }
 
+
+    @Composable
+    fun mainDisplay() {
+        Column(
+            modifier = Modifier.fillMaxSize().padding(16.dp)
+        ) {
+            val state by remember { UDPTracker.state }
+
+            @Composable
+            fun display(serial: GPSSerialState.Updated) {
+                val (latitude, longitude, speed, course, courseCardinal, satellites, hdop, altitude, datetime, age, charactersProcessed, sentencesFixed, failedCheckSum) = serial
+
+                Column(verticalArrangement = Arrangement.spacedBy(2.dp)) {
+                    Text("Sats: $satellites, HDOP: $hdop")
+                    Text("Coords: $latitude, $longitude")
+                    Text("Altitude: $altitude")
+                    Text("Speed: $speed")
+                    Text("Course: $course, $courseCardinal")
+                    Text("Date Time: $datetime")
+                    Text("Age: $age")
+                }
+            }
+
+            when(val serial = state) {
+                is GPSSerialState.Error -> Text(serial.exception.message?:"")
+                is GPSSerialState.Message -> Text(serial.message)
+                GPSSerialState.NoPosition -> Text("No position...")
+                is GPSSerialState.Positioning -> {
+                    Text("Fixing Position...")
+                }
+                is GPSSerialState.Updated -> display(serial)
+
+            }
+        }
+    }
 }

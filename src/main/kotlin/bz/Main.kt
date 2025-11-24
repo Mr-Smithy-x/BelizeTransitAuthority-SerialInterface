@@ -23,7 +23,7 @@ fun main() {
 
     val content: ComposeApp = when (Config.getString("APP")) {
         "Roku" -> RokuApp
-        "Belizamon" -> Belimazon
+        "Belimazon" -> Belimazon
         "BTA" -> BTAApplication
         "Tracker" -> TrackerApp
         else -> RokuApp
