@@ -9,6 +9,7 @@ import bz.apps.rokuapp.RokuApp
 import bz.apps.tracker.TrackerApp
 import com.fazecast.jSerialComm.SerialPort
 import java.io.IOException
+import java.util.*
 import kotlin.properties.Delegates
 
 lateinit var state: WindowState
@@ -28,6 +29,8 @@ fun main() {
         "Tracker" -> TrackerApp
         else -> RokuApp
     }
+    //
+    val sppUUID = UUID.fromString("00001101-0000-1000-8000-00805F9B34FB")
     application(exitProcessOnExit = true, content = content.run())
 }
 

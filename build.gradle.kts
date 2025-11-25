@@ -42,6 +42,9 @@ dependencies {
     // ZXing for QR and Barcode scanning
     implementation("com.google.zxing:core:3.5.3")
     implementation("com.google.zxing:javase:3.5.3")
+
+    //odb interface
+    implementation("com.github.eltonvs:kotlin-obd-api:1.3.0")
 }
 
 compose.desktop {
