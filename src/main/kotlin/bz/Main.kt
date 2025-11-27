@@ -5,6 +5,7 @@ import androidx.compose.ui.window.application
 import bz.apps.ComposeApp
 import bz.apps.belimazon.Belimazon
 import bz.apps.busfare.BTAApplication
+import bz.apps.obdii.OBDIIApp
 import bz.apps.rokuapp.RokuApp
 import bz.apps.tracker.TrackerApp
 import com.fazecast.jSerialComm.SerialPort
@@ -27,6 +28,7 @@ fun main() {
         "Belimazon" -> Belimazon
         "BTA" -> BTAApplication
         "Tracker" -> TrackerApp
+        "OBD" -> OBDIIApp
         else -> RokuApp
     }
     //

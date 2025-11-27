@@ -10,8 +10,8 @@ class SerialImpl(override val devicePort: String, override val baudRate: Int = 9
     override lateinit var port: SerialPort
     private lateinit var reader: BufferedReader
 
-    private val out get() = port.outputStream
-    private val input get() = port.inputStream
+    val out get() = port.outputStream
+    val input get() = port.inputStream
     override val isInitialized get() = this::port.isInitialized
     override val isOpened: Boolean get() = if (this::port.isInitialized) port.isOpen else false
 

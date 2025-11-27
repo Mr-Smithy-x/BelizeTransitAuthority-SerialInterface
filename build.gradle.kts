@@ -16,6 +16,7 @@ repositories {
     maven ("https://maven.pkg.jetbrains.space/public/p/ktor/eap")
     maven ("https://maven.pkg.jetbrains.space/kotlin/p/kotlin/dev")
     google()
+    maven("https://jitpack.io")
 }
 
 dependencies {
@@ -43,6 +44,7 @@ dependencies {
     implementation("com.google.zxing:core:3.5.3")
     implementation("com.google.zxing:javase:3.5.3")
 
+    val kableVersion = "0.40.0"
     //odb interface
     implementation("com.github.eltonvs:kotlin-obd-api:1.3.0")
 }
