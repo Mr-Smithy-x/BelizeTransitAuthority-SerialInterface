@@ -6,10 +6,7 @@ import androidx.compose.runtime.mutableStateOf
 import bz.Config
 import bz.apps.tracker.usecase.state.GPSSerialState
 import com.google.gson.JsonObject
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.Job
-import kotlinx.coroutines.launch
+import kotlinx.coroutines.*
 import java.lang.Thread.sleep
 import java.net.DatagramPacket
 import java.net.DatagramSocket
@@ -24,6 +21,8 @@ object UDPTracker : CoroutineScope {
     private val _state: MutableState<GPSSerialState> = mutableStateOf(GPSSerialState.NoPosition)
     val state: State<GPSSerialState> get() = _state
 
+    val list = arrayListOf<Job>()
+
     val reader by lazy {
         val string = Config.getString("GPS_PORT")
         GPSReader(string!!)
@@ -32,7 +31,6 @@ object UDPTracker : CoroutineScope {
     private val uuid by lazy {
         Config.getString("GPS_UUID") ?: error("UUID not found")
     }
-
 
     private fun addSerialState(serial: GPSSerialState.Updated): JsonObject {
         val element = JsonObject()
@@ -129,8 +127,12 @@ object UDPTracker : CoroutineScope {
     fun start(ip: String, port: Int) = launch {
         this@UDPTracker.ip = ip
         this@UDPTracker.port = port
-        reader.init()
-        reader.listen { location ->
+        val job = reader.init()
+        reader.listen { location, scope ->
+            if(!isActive) {
+                scope.cancel()
+            }
+            scope.ensureActive()
             _state.value = location
             when(location) {
                 is GPSSerialState.Error -> {
@@ -153,6 +155,7 @@ object UDPTracker : CoroutineScope {
 
 
         while (true) {
+            ensureActive()
             when(val serial = state.value) {
                 is GPSSerialState.Error -> Unit
                 is GPSSerialState.Message -> Unit

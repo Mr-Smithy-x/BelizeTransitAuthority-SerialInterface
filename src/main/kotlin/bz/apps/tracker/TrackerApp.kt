@@ -19,8 +19,12 @@ import bz.apps.ComposeApp
 import bz.state
 import bz.apps.tracker.usecase.state.GPSSerialState
 import bz.ui.const.Theme
+import kotlinx.coroutines.DisposableHandle
+import kotlinx.coroutines.cancelFutureOnCompletion
 
 object TrackerApp : ComposeApp {
+
+    private val disposables = arrayListOf<DisposableHandle>()
 
     override fun run(): @Composable ApplicationScope.() -> Unit = {
         Config.load(".env.properties")
@@ -49,13 +53,19 @@ object TrackerApp : ComposeApp {
                         job = UDPTracker.start(
                             ip = Config.getString("GPS_UDP_HOST")!!,
                             port = Config.getInt("GPS_UDP_PORT")!!
-                        )
+                        ).also {
+                            disposables.add(it.invokeOnCompletion {
+                                UDPTracker.reader.close()
+                            })
+                        }
                     }
                     Item("Stop GPS Tracker") {
                         if(job != null) {
+                            UDPTracker.reader.close()
                             job?.cancel()
                         }
-                        UDPTracker.reader.close()
+                        disposables.forEach { it.dispose() }
+                        disposables.clear()
                     }
                     Item("Exit") {
                         exitApplication()
@@ -117,20 +127,6 @@ object TrackerApp : ComposeApp {
                     Text("Course: $course, $courseCardinal")
                     Text("Date Time: $datetime")
                     Text("Age: $age")
-                    Button(onClick = {
-                        when(state) {
-                            is GPSSerialState.Error -> Unit
-                            is GPSSerialState.Message -> Unit
-                            GPSSerialState.NoPosition -> Unit
-                            is GPSSerialState.Positioning -> Unit
-                            is GPSSerialState.Updated -> {
-                                UDPTracker.sendCrash(state as GPSSerialState.Updated)
-                            }
-                        }
-
-                    }) {
-                        Text("Ping Crash")
-                    }
                 }
             }
 

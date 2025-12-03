@@ -4,10 +4,11 @@ package bz.apps.tracker.viewmodel
 import bz.apps.busfare.rw.io.Serial
 import bz.apps.busfare.rw.io.impl.SerialImpl
 import bz.apps.busfare.rw.models.Response
-import bz.base.ViewModel
 import bz.apps.tracker.usecase.GPSUseCase
 import bz.apps.tracker.usecase.impl.GPSUseCaseImpl
 import bz.apps.tracker.usecase.state.GPSSerialState
+import bz.base.ViewModel
+import kotlinx.coroutines.ensureActive
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
@@ -23,6 +24,7 @@ class GPSViewModel(
 
     fun run() = launch {
         useCase.invoke().collect {
+            ensureActive()
             when(it) {
                 is Response.WritingToSerial<GPSSerialState> -> {
                     _state.emit(it.data)

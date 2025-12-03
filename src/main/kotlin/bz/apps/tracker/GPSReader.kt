@@ -2,10 +2,7 @@ package bz.apps.tracker
 
 import bz.apps.tracker.usecase.state.GPSSerialState
 import bz.apps.tracker.viewmodel.GPSViewModel
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.SupervisorJob
-import kotlinx.coroutines.launch
+import kotlinx.coroutines.*
 
 class GPSReader(devicePort: String) {
 
@@ -13,10 +10,10 @@ class GPSReader(devicePort: String) {
     private val vm: GPSViewModel = GPSViewModel(devicePort)
     private val serial get() = vm.serial
 
-    fun listen(callback: (GPSSerialState) -> Unit) =
+    fun listen(callback: (GPSSerialState, CoroutineScope) -> Unit) =
         CoroutineScope(Dispatchers.Default + SupervisorJob()).launch {
             vm.state.collect { currentState ->
-                callback(currentState)
+                callback(currentState, this)
             }
         }
 
@@ -42,9 +39,9 @@ class GPSReader(devicePort: String) {
         return closePort
     }
 
-    fun init() {
+    fun init(): Job {
         vm.serial.initConnection()
-        vm.run()
+        return vm.run()
     }
 
 }

@@ -44,19 +44,19 @@ class GPSUseCaseImpl(private val serial: Serial) : GPSUseCase {
                                 )
                             } else {
                                 GPSSerialState.Positioning(
-                                    latitude = response[0],
-                                    longitude = response[1],
-                                    speed = response[2],
-                                    course = response[3],
-                                    courseCardinal = response[4],
-                                    satellites = response[5],
-                                    hdop = response[6],
-                                    altitude = response[7],
-                                    datetime = response[8],
-                                    age = response[9],
-                                    charactersProcessed = response[10],
-                                    sentencesFixed = response[11],
-                                    failedCheckSum = response[12],
+                                    latitude = response[0] ?: "*",
+                                    longitude = response[1] ?: "*",
+                                    speed = response[2] ?: "*",
+                                    course = response[3] ?: "*",
+                                    courseCardinal = response[4] ?: "*",
+                                    satellites = response[5] ?: "*",
+                                    hdop = response[6] ?: "*",
+                                    altitude = response[7] ?: "*",
+                                    datetime = response[8] ?: "*",
+                                    age = response[9] ?: "-1",
+                                    charactersProcessed = response[10] ?: "-1",
+                                    sentencesFixed = response[11] ?: "-1",
+                                    failedCheckSum = response[12] ?: "*",
                                     substring
                                 )
                             }
@@ -75,6 +75,7 @@ class GPSUseCaseImpl(private val serial: Serial) : GPSUseCase {
                 emit(Response.Error(Exception("Failed to read from serial port")))
             }
         }
+        println("Closed")
     }.catch {
         it.printStackTrace()
         emit(Response.Error(Exception(it.message ?: "Unknown error")))
