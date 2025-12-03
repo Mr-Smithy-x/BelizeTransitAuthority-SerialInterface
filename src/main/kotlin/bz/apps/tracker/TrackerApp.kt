@@ -27,7 +27,6 @@ object TrackerApp : ComposeApp {
     private val disposables = arrayListOf<DisposableHandle>()
 
     override fun run(): @Composable ApplicationScope.() -> Unit = {
-        Config.load(".env.properties")
         state = rememberWindowState(
             placement = WindowPlacement.Floating,
             isMinimized = false,

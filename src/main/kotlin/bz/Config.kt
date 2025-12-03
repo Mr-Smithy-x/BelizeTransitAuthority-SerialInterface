@@ -19,6 +19,14 @@ object Config {
             throw Exception("$fileName does not exist")
         }
     }
+    fun load(file: File) {
+        if (file.exists()) {
+            val fileInputStream = FileInputStream(file)
+            props.load(fileInputStream)
+        } else {
+            throw Exception("$file does not exist")
+        }
+    }
 
     fun getString(key: String): String? {
         return props.getProperty(key, null)
