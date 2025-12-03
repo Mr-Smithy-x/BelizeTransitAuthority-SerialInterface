@@ -56,6 +56,15 @@ compose.desktop {
             targetFormats(TargetFormat.Dmg, TargetFormat.Msi, TargetFormat.Deb)
             packageName = "BzFare"
             packageVersion = "1.0.0"
+            macOS {
+                iconFile.set(project.file("belazon.icns"))
+            }
+            windows {
+                iconFile.set(project.file("belazon.ico"))
+            }
+            linux {
+                iconFile.set(project.file("belazon.png"))
+            }
         }
     }
 }
