@@ -4,6 +4,7 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
+import androidx.compose.material.Button
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Text
 import androidx.compose.material.darkColors
@@ -87,6 +88,49 @@ object TrackerApp : ComposeApp {
                     Text("Course: $course, $courseCardinal")
                     Text("Date Time: $datetime")
                     Text("Age: $age")
+                    Button(onClick = {
+                        when(state) {
+                            is GPSSerialState.Error -> Unit
+                            is GPSSerialState.Message -> Unit
+                            GPSSerialState.NoPosition -> Unit
+                            is GPSSerialState.Positioning -> Unit
+                            is GPSSerialState.Updated -> {
+                                UDPTracker.sendCrash(state as GPSSerialState.Updated)
+                            }
+                        }
+
+                    }) {
+                        Text("Ping Crash")
+                    }
+                }
+            }
+
+            @Composable
+            fun display(serial: GPSSerialState.Positioning) {
+                val (latitude, longitude, speed, course, courseCardinal, satellites, hdop, altitude, datetime, age, charactersProcessed, sentencesFixed, failedCheckSum) = serial
+
+                Column(verticalArrangement = Arrangement.spacedBy(2.dp)) {
+                    Text("Sats: $satellites, HDOP: $hdop")
+                    Text("Coords: $latitude, $longitude")
+                    Text("Altitude: $altitude")
+                    Text("Speed: $speed")
+                    Text("Course: $course, $courseCardinal")
+                    Text("Date Time: $datetime")
+                    Text("Age: $age")
+                    Button(onClick = {
+                        when(state) {
+                            is GPSSerialState.Error -> Unit
+                            is GPSSerialState.Message -> Unit
+                            GPSSerialState.NoPosition -> Unit
+                            is GPSSerialState.Positioning -> Unit
+                            is GPSSerialState.Updated -> {
+                                UDPTracker.sendCrash(state as GPSSerialState.Updated)
+                            }
+                        }
+
+                    }) {
+                        Text("Ping Crash")
+                    }
                 }
             }
 
@@ -96,6 +140,7 @@ object TrackerApp : ComposeApp {
                 GPSSerialState.NoPosition -> Text("No position...")
                 is GPSSerialState.Positioning -> {
                     Text("Fixing Position...")
+                    display(serial)
                 }
                 is GPSSerialState.Updated -> display(serial)
 
