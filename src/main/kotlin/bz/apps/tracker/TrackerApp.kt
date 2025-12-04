@@ -16,11 +16,10 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.*
 import bz.Config
 import bz.apps.ComposeApp
-import bz.state
 import bz.apps.tracker.usecase.state.GPSSerialState
+import bz.state
 import bz.ui.const.Theme
 import kotlinx.coroutines.DisposableHandle
-import kotlinx.coroutines.cancelFutureOnCompletion
 
 object TrackerApp : ComposeApp {
 
