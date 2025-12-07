@@ -1,8 +1,11 @@
 package bz.apps.tracker
 
+import androidx.compose.desktop.ui.tooling.preview.Preview
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.Button
 import androidx.compose.material.MaterialTheme
@@ -20,6 +23,7 @@ import bz.apps.tracker.usecase.state.GPSSerialState
 import bz.state
 import bz.ui.const.Theme
 import kotlinx.coroutines.DisposableHandle
+import kotlinx.coroutines.Job
 
 object TrackerApp : ComposeApp {
 
@@ -33,7 +37,7 @@ object TrackerApp : ComposeApp {
             size = DpSize(300.dp, 300.dp)
         )
 
-        var job by remember { mutableStateOf<kotlinx.coroutines.Job?>(null) }
+        var job by remember { mutableStateOf<Job?>(null) }
         Window(
             onCloseRequest = {
                 exitApplication()
@@ -48,14 +52,15 @@ object TrackerApp : ComposeApp {
                         if(job?.isActive == true) {
                             job?.cancel()
                         }
-                        job = UDPTracker.start(
+                        /*job = UDPTracker.start(
                             ip = Config.getString("GPS_UDP_HOST")!!,
                             port = Config.getInt("GPS_UDP_PORT")!!
                         ).also {
                             disposables.add(it.invokeOnCompletion {
                                 UDPTracker.reader.close()
                             })
-                        }
+                        }*/
+                        job = UDPTracker.startMQTT()
                     }
                     Item("Stop GPS Tracker") {
                         if(job != null) {
@@ -71,18 +76,19 @@ object TrackerApp : ComposeApp {
                 }
             }
             MaterialTheme(colors = darkColors(background = Theme.Base.background)) {
-                mainDisplay()
+                val state by remember { UDPTracker.state }
+                mainDisplay(state)
             }
         }
     }
 
 
+    @Preview
     @Composable
-    fun mainDisplay() {
+    fun mainDisplay(state: GPSSerialState) {
         Column(
             modifier = Modifier.fillMaxSize().padding(16.dp)
         ) {
-            val state by remember { UDPTracker.state }
 
             @Composable
             fun display(serial: GPSSerialState.Updated) {
@@ -96,19 +102,24 @@ object TrackerApp : ComposeApp {
                     Text("Course: $course, $courseCardinal")
                     Text("Date Time: $datetime")
                     Text("Age: $age")
-                    Button(onClick = {
-                        when(state) {
-                            is GPSSerialState.Error -> Unit
-                            is GPSSerialState.Message -> Unit
-                            GPSSerialState.NoPosition -> Unit
-                            is GPSSerialState.Positioning -> Unit
-                            is GPSSerialState.Updated -> {
-                                UDPTracker.sendCrash(state as GPSSerialState.Updated)
+                    Row(
+                        modifier = Modifier.fillMaxWidth(),
+                        horizontalArrangement = Arrangement.Center,
+                        verticalAlignment = Alignment.CenterVertically
+                    ) {
+                        Button(onClick = {
+                            when (state) {
+                                is GPSSerialState.Error -> Unit
+                                is GPSSerialState.Message -> Unit
+                                GPSSerialState.NoPosition -> Unit
+                                is GPSSerialState.Positioning -> Unit
+                                is GPSSerialState.Updated -> {
+                                    UDPTracker.sendMTTQCrash(state)
+                                }
                             }
+                        }) {
+                            Text("Ping Crash")
                         }
-
-                    }) {
-                        Text("Ping Crash")
                     }
                 }
             }
@@ -141,4 +152,26 @@ object TrackerApp : ComposeApp {
             }
         }
     }
+}
+
+@Preview
+@Composable
+fun Preview() {
+    val state = GPSSerialState.Updated(
+        latitude = "40.70000",
+        longitude = "70.0123",
+        speed = "40",
+        course = "270",
+        courseCardinal = "SWS",
+        satellites = "20",
+        hdop = "100.0",
+        altitude = "20.0",
+        datetime = "2025-11-12 12:12:12",
+        age = "567",
+        charactersProcessed = "Processed",
+        sentencesFixed = "Fixed",
+        failedCheckSum = "Failed",
+        raw = "ok"
+    )
+    TrackerApp.mainDisplay(state)
 }

@@ -27,6 +27,7 @@ fun main() {
     if (DEBUG) {
         println("Testing mode: ${SerialPort.getCommPorts().map { it.systemPortName }}")
     }
+
     val content: ComposeApp = when (Config.getString("APP")) {
         "Roku" -> RokuApp
         "Belimazon" -> Belimazon
@@ -36,7 +37,6 @@ fun main() {
         else -> RokuApp
     }
 
-    val sppUUID = UUID.fromString("00001101-0000-1000-8000-00805F9B34FB")
     application(exitProcessOnExit = true, content = content.run())
 }
 

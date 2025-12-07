@@ -24,8 +24,11 @@ dependencies {
     testImplementation(kotlin("test"))
     implementation("com.fazecast:jSerialComm:2.11.0")
     implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.8.1")
-    implementation("org.bouncycastle:bcpkix-jdk15to18:1.77")
+    //implementation("org.bouncycastle:bcpkix-jdk15to18:1.77")
     implementation("org.bytedeco:javacv-platform:1.5.9")
+
+    implementation("io.github.davidepianca98:kmqtt-common-jvm:1.0.0")
+    implementation("io.github.davidepianca98:kmqtt-client-jvm:1.0.0")
 
     implementation("com.squareup.retrofit2:retrofit:2.11.0")
     implementation("com.squareup.retrofit2:converter-gson:2.9.0")
@@ -44,7 +47,6 @@ dependencies {
     implementation("com.google.zxing:core:3.5.3")
     implementation("com.google.zxing:javase:3.5.3")
 
-    val kableVersion = "0.40.0"
     //odb interface
     implementation("com.github.eltonvs:kotlin-obd-api:1.3.0")
 }

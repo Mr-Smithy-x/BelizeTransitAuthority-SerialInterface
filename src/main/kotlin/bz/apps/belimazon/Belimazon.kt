@@ -113,7 +113,7 @@ object Belimazon: ComposeApp {
                                 }
                             }
                             is GPSSerialState.Positioning -> Unit
-                            is GPSSerialState.Updated -> TrackerApp.mainDisplay()
+                            is GPSSerialState.Updated -> TrackerApp.mainDisplay(state)
                         }
                     }
 
